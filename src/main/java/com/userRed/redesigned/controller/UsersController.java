@@ -50,4 +50,11 @@ public class UsersController {
 
         return ResponseEntity.ok(  dogService.saveDog(tmpDog, owner) + " is REGISTERED" );
     }
+
+    @GetMapping(path = "/getMyDogs", params = {"username"}) //username for owner that is
+    public ResponseEntity<?> getMyDogs(@RequestParam String username){
+
+        return ResponseEntity.ok(dogService.getDogs(username));
+    }
+
 }

@@ -6,6 +6,7 @@ import com.userRed.redesigned.repository.DogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,21 @@ public class DogService {
     public String saveDog(Dog dogParam, String ownername) {
         Optional<Users> owner = userService.findByName(ownername);//gets by username
         dogParam.setOwner(owner.get());
+        //owner.get().addToDogList(dogParam);
         repository.save(dogParam);
         return dogParam.getName();
+    }
+
+    public List<Dog> getDogs(String ownerUsername){
+        //get everthing from repo
+        Optional<Users> owner = userService.findByName(ownerUsername);//gets by username
+        //get's owner Id
+        //uses repor
+        long id = owner.get().getId();
+       List<Dog> ownersDogs = repository.findAllByOwner_Id(id);
+
+        //return buildOptional(result)
+
+        return ownersDogs;
     }
 }

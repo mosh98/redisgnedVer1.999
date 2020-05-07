@@ -10,7 +10,7 @@ import java.util.Set;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
     @Column(name = "username")
     private String username;
     @Column(name = "email")
@@ -48,6 +48,9 @@ public class Users {
         return username;
     }
 
+    public long getId() {
+        return id;
+    }
 
     public void setUsername(String username) {
         this.username = username;

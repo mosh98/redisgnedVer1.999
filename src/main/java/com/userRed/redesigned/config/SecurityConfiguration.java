@@ -37,7 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .disable()
                 // dont authenticate this particular request
                 .authorizeRequests()
-                .antMatchers("/authenticate","dog/register" ,"/addNewDog","/register", "/dogpark/**", "/dog/**", "/user/**", "/wastebin/**", "/login/**")
+                .antMatchers("/authenticate","dog/register" ,"/addNewDog","/register","/getMyDogs","/dogpark/**", "/dog/**", "/user/**", "/wastebin/**", "/login/**")
                 .permitAll().anyRequest().authenticated();
     }
     private PasswordEncoder getPasswordEncoder() {
