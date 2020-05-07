@@ -30,6 +30,18 @@ public class UsersController {
         return ResponseEntity.ok(userService.save(users));
     }
 
+    @RequestMapping(path= "/registerWithMail", method = RequestMethod.POST)
+    public ResponseEntity<?> registerUsingMail(@RequestBody Users users){
+
+        return ResponseEntity.ok(userService.saveUsingEmail(users));
+    }
+
+   /* @GetMapping(path = "/find", params = "email")
+    public ResponseEntity<?> findUsingEmail(@RequestParam String email) {
+        var result = userService.findUserByEmail(email);
+        return ResponseEntity.of(result);
+    }*/
+
     /**How to call:
      * localhost:8080/user/dog/register?name=XXXX&breed=XXXX&age=XX&gender=XXXX&description=XXXX&owner=XXXXX
      * */
@@ -56,5 +68,9 @@ public class UsersController {
 
         return ResponseEntity.ok(dogService.getDogs(username));
     }
+
+
+
+
 
 }

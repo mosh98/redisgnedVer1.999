@@ -21,7 +21,7 @@ public class DogService {
     public String saveDog(Dog dogParam, String ownername) {
         Optional<Users> owner = userService.findByName(ownername);//gets by username
         dogParam.setOwner(owner.get());
-        //owner.get().addToDogList(dogParam);
+
         repository.save(dogParam);
         return dogParam.getName();
     }

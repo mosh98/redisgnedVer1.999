@@ -4,6 +4,7 @@ import com.userRed.redesigned.controller.MyUserDetails;
 import com.userRed.redesigned.model.Users;
 import com.userRed.redesigned.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,7 +38,22 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public Users save(Users usrParam){
         usrParam.setCreatedAt();
-        System.out.println("usrParam is created");
         return usersRepository.save(usrParam);
     }
+
+    public  String extractUsername(String smth){
+        String[] parts = smth.split("@");
+        return parts[0];
+    }
+
+    public Users saveUsingEmail(Users paramUsr){
+        paramUsr.setCreatedAt();
+        paramUsr.setUsername(extractUsername(paramUsr.getEmail()));
+        return usersRepository.save(paramUsr);
+    }
+
+    public Optional<Users> findUserByEmail(String email) {
+        return usersRepository.findByEmail(email);
+    }
+
 }
