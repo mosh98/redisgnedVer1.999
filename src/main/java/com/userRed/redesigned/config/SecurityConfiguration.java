@@ -32,14 +32,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.csrf()
                 .disable()
                 // dont authenticate this particular request
                 .authorizeRequests()
-                .antMatchers("/authenticate","/registerWithMail","dog/register" ,"/addNewDog","/register","/getMyDogs","/dogpark/**", "/dog/**", "/user/**", "/wastebin/**", "/login/**")
+                .antMatchers("/authenticate","/dogs/**","/find","/update","/delete","/registerWithMail","dog/register" ,"/addNewDog","/register","/getMyDogs","/dogpark/**", "/dog/**", "/user/**", "/wastebin/**", "/login/**")
                 .permitAll().anyRequest().authenticated();
     }
+
     private PasswordEncoder getPasswordEncoder() {
         return new PasswordEncoder() {
             @Override

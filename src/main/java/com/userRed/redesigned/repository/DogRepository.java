@@ -8,9 +8,9 @@ import java.util.List;
 public interface DogRepository extends JpaRepository<Dog,Integer> {
      Dog findByDogId(long id);
 
-     Dog findByOwner(String owner);
-
      List<Dog> findAllByOwner_Id(long id);
+
+     int deleteByDogId(int id);
 
 
 }

@@ -9,7 +9,7 @@ public class Dog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dog_id")
-    private long dogId;
+    private int dogId;
 
     @Column(name = "name")
     private String name;
@@ -33,7 +33,7 @@ public class Dog {
     public Dog() {
     }
 
-    public long getDogId() {
+    public int getDogId() {
         return dogId;
     }
 
@@ -45,7 +45,7 @@ public class Dog {
         this.name = name;
     }
 
-    public void setDogId(long dogId) {
+    public void setDogId(int dogId) {
         this.dogId = dogId;
     }
 

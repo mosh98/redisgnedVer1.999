@@ -40,4 +40,18 @@ public class DogService {
 
         return ownersDogs;
     }
+
+
+    public Dog updateDog(Dog dog) {
+        return repository.save(dog);
+    }
+
+    public int deleteDogById(int id) {
+       return repository.deleteByDogId(id);
+    }
+
+    public Dog findDogById(int id) {
+        return repository.findByDogId(id);
+
+    }
 }
