@@ -8,11 +8,8 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class WasteBinRequest {
 
-	@NonNull
 	Double latitude;
-	@NonNull
 	Double longitude;
-	@NonNull
 	Double maxDistance;
 
 }
