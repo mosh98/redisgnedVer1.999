@@ -27,9 +27,11 @@ public class DogService {
     }
 
     public List<Dog> getDogs(String ownerUsername){
+
         //get everthing from repo
         Optional<Users> owner = userService.findByName(ownerUsername);//gets by username
         //get's owner Id
+
         //uses repor
         long id = owner.get().getId();
        List<Dog> ownersDogs = repository.findAllByOwner_Id(id);

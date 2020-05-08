@@ -21,8 +21,11 @@ public class UsersController {
 
     @GetMapping(path = "/find", params = "name")
     public ResponseEntity<?> findByName(@RequestParam String name) {
+
         var result = userService.findByName(name);
+
         return ResponseEntity.of(result);
+
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -65,7 +68,6 @@ public class UsersController {
 
     @GetMapping(path = "/getMyDogs", params = {"username"}) //username for owner that is
     public ResponseEntity<?> getMyDogs(@RequestParam String username){
-
         return ResponseEntity.ok(dogService.getDogs(username));
     }
 
