@@ -36,8 +36,6 @@ public class DogService {
         long id = owner.get().getId();
        List<Dog> ownersDogs = repository.findAllByOwner_Id(id);
 
-        //return buildOptional(result)
-
         return ownersDogs;
     }
 

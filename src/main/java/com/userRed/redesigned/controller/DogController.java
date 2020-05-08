@@ -1,6 +1,6 @@
 package com.userRed.redesigned.controller;
 
-import com.userRed.redesigned.model.Dog;
+
 import com.userRed.redesigned.service.DogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

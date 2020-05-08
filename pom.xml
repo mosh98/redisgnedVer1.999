@@ -12,6 +12,7 @@
 	<groupId>com.userRed</groupId>
 	<artifactId>redesigned</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>redesigned</name>
 	<description>Demo project for Spring Boot</description>
 
