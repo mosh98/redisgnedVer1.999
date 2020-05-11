@@ -1,6 +1,8 @@
 package com.userRed.redesigned.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -19,6 +21,8 @@ public class Users {
     private String email;
     @Column(name = "name")
     private String name;
+
+    @JsonIgnore
     @Column(name = "password")
     private String password;
     @Column(name = "dateOfBirth")

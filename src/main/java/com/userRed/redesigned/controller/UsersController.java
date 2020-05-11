@@ -27,10 +27,10 @@ public class UsersController {
     @Autowired
     private DogService dogService;
 
-    @GetMapping(path = "/find", params = "name")
-    public ResponseEntity<?> findByName(@RequestParam String name) {
+    @GetMapping(path = "/find", params = "username")
+    public ResponseEntity<?> findByName(@RequestParam String username) {
 
-        var result = userService.findByName(name);
+        var result = userService.findByName(username);
 
         return ResponseEntity.of(result);
 
