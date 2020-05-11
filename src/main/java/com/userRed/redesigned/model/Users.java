@@ -2,6 +2,7 @@ package com.userRed.redesigned.model;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ public class Users {
     private long id;
     @Column(name = "username")
     private String username;
+
     @Column(name = "email")
     private String email;
     @Column(name = "name")
@@ -31,7 +33,7 @@ public class Users {
     @JoinTable(name = "user_dogs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "dog_id"))
     private Set<Dog> DogList;
 
-    public Users() {
+    public Users( ) {
     }
 
     public Users(Users users) {
