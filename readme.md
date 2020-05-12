@@ -21,6 +21,7 @@ user/register
 }
 
 POST register user by mail only, applicable for facebok users
+..../registerWithMail
 { 
 	"username": "leave a blank string",
 	"email": "XXX@hotmail.com",
