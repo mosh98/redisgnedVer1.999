@@ -5,7 +5,7 @@
 
 GET user
 
-user/find?name=XXX
+user/find?username=XXX
 
 POST register user
 
