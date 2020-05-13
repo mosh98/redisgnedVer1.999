@@ -27,7 +27,7 @@ public class Users {
     private String description;
     @Column(name = "acc_created")
     private String createdAt;
-
+//....
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_dogs", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "dog_id"))
     private Set<Dog> dogList;
