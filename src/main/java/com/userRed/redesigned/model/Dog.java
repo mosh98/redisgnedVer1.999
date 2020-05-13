@@ -1,15 +1,22 @@
 package com.userRed.redesigned.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "Dog")
+@NoArgsConstructor
+@Table(name = "dog")
 public class Dog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dog_id")
-    private int dogId;
+    private Long dogId;
 
     @Column(name = "name")
     private String name;
@@ -29,63 +36,4 @@ public class Dog {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users owner;
-
-    public Dog() {
-    }
-
-    public int getDogId() {
-        return dogId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDogId(int dogId) {
-        this.dogId = dogId;
-    }
-
-    public String getBreed() {
-        return breed;
-    }
-
-    public void setBreed(String breed) {
-        this.breed = breed;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Users getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Users owner) {
-        this.owner = owner;
-    }
 }

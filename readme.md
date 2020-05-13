@@ -5,69 +5,104 @@
 
 GET user
 
-user/find?username=XXX
+https://redesigned-backend.herokuapp.com/user/find?username=XXX
 
 POST register user
 
-user/register
+https://redesigned-backend.herokuapp.com/user/register
 
 { 
 	"username": "XXXX",
 	"email": "XXX@hotmail.com",
-	"name": "HAHA",
 	"password": "1234",
-	"dateOfBirth": "22-03-2020",
-	"genderType": "FEMALE"
+	"date_of_birth": "22-03-2020",
+	"gender_type": "FEMALE"
 }
 
 POST register user by mail only, applicable for facebok users
-..../registerWithMail
+https://redesigned-backend.herokuapp.com/registerWithMail
 { 
 	"username": "leave a blank string",
 	"email": "XXX@hotmail.com",
-	"name": "HAHA",
 	"password": "1234",
-	"dateOfBirth": "22-03-2020",
-	"genderType": "FEMALE"
+	"date_of_birth": "22-03-2020",
+	"gender_type": "FEMALE"
 }
+
+PUT update user description
+
+https://redesigned-backend.herokuapp.com/user/update?username=XXXX&description=XXXXX 
+
+PUT update user password 
+
+https://redesigned-backend.herokuapp.com/user/update?username=XXXX&password=XXXXX 
+
+PUT update user date of birth
+
+https://redesigned-backend.herokuapp.com/user/update?username=XXXX&date_of_birth=XXXXX
+
+PUT update user email
+
+https://redesigned-backend.herokuapp.com/user/update?username=XXXX&email=XXXXX
 
 ## Dogs
 
-GET  the dog by
+GET the dog by ID: 
+https://redesigned-backend.herokuapp.com/dogs/find?id=xxx
 
-/dogs/find?id= xx
+GET list of dogs a user owns
+https://redesigned-backend.herokuapp.com/user/getMyDogs?username= XXX
 
-DELETE
-/dogs/delete?id= xx
-
+DELETE dog from database
+https://redesigned-backend.herokuapp.com/dogs/delete?dogId=xxx
 
 POST register dog using post
+https://redesigned-backend.herokuapp.com/user/dog/register?owner=XXXX
+body: 
 
-/user/dog/register?name=XXXX&breed=XXXX&age=XX&gender=XXXX&description=XXXX&owner=XXXXX
+{ 
+	"name": "XXXX",
+	"age": "1",
+	"breed": "XXXX",
+	"gender": "XXXX",
+	"description": "XXXX"
+}
 
+PUT change the dogs name
+https://redesigned-backend.herokuapp.com/dogs/update?id=XXXX&name=XXXX */
 
-GET list of dogs a user ownes
-	/user/getMyDogs?username= XXX
+PUT change the dogs breed
+https://redesigned-backend.herokuapp.com/dogs/update?id=XXXX&breed=XXXX */
 
+PUT change the dogs age
+https://redesigned-backend.herokuapp.com/dogs/update?id=XXXX&age=XXXX */
 
+PUT change the dogs gender
+https://redesigned-backend.herokuapp.com/dogs/update?id=XXXX&gender=XXXX */
+
+PUT change the dogs description
+https://redesigned-backend.herokuapp.com/dogs/update?id=XXXX&description=XXXX */
 
 ## .../wastebin
 
-GET .../find?All
+GET 
+https://redesigned-backend.herokuapp.com/find?All
 	Returnerar alla papperkorgar i JSON.
 	{
 		"latitude":"XXX",
 		"longitude":"YYY"
 	}
 	
-GET .../find?Latitude=XXX&Longitude=YYY&MaxDistance=ZZZ
+GET 
+https://redesigned-backend.herokuapp.com/find?Latitude=XXX&Longitude=YYY&MaxDistance=ZZZ
 	Returnerar alla papperskorgar inom ZZZ meter från XXX.YYY i JSON.
 	{
 		"latitude":"XXX",
 		"longitude":"YYY"
 	}
 	
-GET .../find
+GET 
+https://redesigned-backend.herokuapp.com/find
 	Body:JSON
 	{
 		"latitude":"XXX",
