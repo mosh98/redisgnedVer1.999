@@ -5,13 +5,11 @@ import com.userRed.redesigned.model.Users;
 import com.userRed.redesigned.repository.UsersRepository;
 import com.userRed.redesigned.service.DogService;
 import com.userRed.redesigned.service.MyUserDetailsService;
-import org.apache.http.client.HttpResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping(path = "/user")
