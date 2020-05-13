@@ -1,6 +1,5 @@
 package com.userRed.redesigned.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.userRed.redesigned.model.Users;
 import org.junit.jupiter.api.Test;
@@ -32,10 +31,9 @@ class UsersControllerTest {
         Users us = new Users();
         us.setUsername("smth smth, can be blank aswel");
         us.setEmail("hotHot@hotmail.com");
-        us.setName("testName");
         us.setPassword("q923uy");
-        us.setDateOfBirth("2020-03-03");
-        us.setGenderType("FEMALE");
+        us.setDate_of_birth("2020-03-03");
+        us.setGender_type("FEMALE");
         us.setCreatedAt();
         return us;
     }
@@ -62,10 +60,9 @@ class UsersControllerTest {
 
         us.setUsername("smth smth, can be blank aswel");
         us.setEmail("               ");
-        us.setName("testName");
         us.setPassword("q923uy");
-        us.setDateOfBirth("2020-03-03");
-        us.setGenderType("FEMALE");
+        us.setDate_of_birth("2020-03-03");
+        us.setGender_type("FEMALE");
 
         mockMvc.perform(post("http://localhost:8080/user/registerWithMail", 42L)
                 .contentType(MediaType.APPLICATION_JSON)

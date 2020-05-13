@@ -5,9 +5,7 @@ import com.userRed.redesigned.model.Users;
 import com.userRed.redesigned.repository.UsersRepository;
 import com.userRed.redesigned.service.DogService;
 import com.userRed.redesigned.service.MyUserDetailsService;
-import org.apache.http.client.HttpResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,59 +25,92 @@ public class UsersController {
     @Autowired
     private DogService dogService;
 
-    @GetMapping(path = "/find", params = "username")
-    public ResponseEntity<?> findByName(@RequestParam String username) {
+    // POST MAPPINGS
 
-        var result = userService.findByName(username);
+    /**CALL: localhost:8080/user/register */
 
-        return ResponseEntity.of(result);
-
-    }
-
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @PostMapping(path = "/register")
     public ResponseEntity<?> registerUser(@RequestBody Users users) throws Exception {
         return userService.save(users);
     }
 
-    @RequestMapping(path= "/registerWithMail", method = RequestMethod.POST)
-    public ResponseEntity<?> registerUsingMail(@RequestBody Users users){
+    /**CALL: localhost:8080/user/registerWithMail */
 
+    @PostMapping(path= "/registerWithMail")
+    public ResponseEntity<?> registerUsingMail(@RequestBody Users users){
         return userService.saveUsingEmail(users);
     }
 
+    /**CALL: localhost:8080/user/dog/register?owner=XXXXX */
 
+    @PostMapping(path = "dog/register", params = {"owner"})
+    public ResponseEntity<?> register(@RequestBody Dog dog, @RequestParam String owner) {
 
-   /* @GetMapping(path = "/find", params = "email")
-    public ResponseEntity<?> findUsingEmail(@RequestParam String email) {
-        var result = userService.findUserByEmail(email);
-        return ResponseEntity.of(result);
+        return dogService.saveDog(dog, owner);
     }
-    */
 
-    /**How to call:
-     * localhost:8080/user/dog/register?name=XXXX&breed=XXXX&age=XX&gender=XXXX&description=XXXX&owner=XXXXX
-     * */
+    // PUT MAPPINGS
 
-    @PostMapping(path = "dog/register", params = { "name","breed","age","gender","description","owner"})
-    public ResponseEntity<?> register(@RequestParam String name,
-                                      @RequestParam String breed,
-                                      @RequestParam int age,
-                                      @RequestParam String gender,
-                                      @RequestParam String description,
-                                      @RequestParam String owner) {
-        Dog tmpDog = new Dog();
-        tmpDog.setName(name);
-        tmpDog.setAge(age);
-        tmpDog.setBreed(breed);
-        tmpDog.setGender(gender);
-        tmpDog.setDescription(description);
+    /**CALL: localhost:8080/user/update?username=XXXX&&description=XXXXX */
 
-        return ResponseEntity.ok(  dogService.saveDog(tmpDog, owner) + " is REGISTERED" );
+    @PutMapping(path = "update", params = {"username", "description"})
+    public ResponseEntity<?> updateDescription(@RequestParam("username") String username,@RequestParam("description") String description) {
+
+        return ResponseEntity.ok(userService.updateUserDescription(username, description));
+
     }
+
+    /**CALL: localhost:8080/user/update?username=XXXX&&password=XXXXX */
+
+    @PutMapping(path = "update", params = {"username", "password"})
+    public ResponseEntity<?> updatePassword(@RequestParam("username") String username,@RequestParam("password") String password) {
+
+        return ResponseEntity.ok(userService.updatePassword(username, password));
+
+    }
+
+    /**CALL: localhost:8080/user/update?username=XXXX&&dateofbirth=XXXXX */
+
+    @PutMapping(path = "update", params = {"username", "date_of_birth"})
+    public ResponseEntity<?> updateDateOfBirth(@RequestParam("username") String username,@RequestParam("date_of_birth") String date_of_birth) {
+
+        return ResponseEntity.ok(userService.updateDateOfBirth(username, date_of_birth));
+
+    }
+
+    /**CALL: localhost:8080/user/update?username=XXXX&&email=XXXXX */
+
+    @PutMapping(path = "update", params = {"username", "email"})
+    public ResponseEntity<?> updateEmail(@RequestParam("username") String username,@RequestParam("email") String email) {
+
+        return ResponseEntity.ok(userService.updateEmail(username, email));
+
+    }
+
+    // GET MAPPINGS
+
+    /**CALL: localhost:8080/user/getMyDogs?username=XXXX */
 
     @GetMapping(path = "/getMyDogs", params = {"username"}) //username for owner that is
     public ResponseEntity<?> getMyDogs(@RequestParam String username){
         return ResponseEntity.ok(dogService.getDogs(username));
     }
 
+    /**CALL: localhost:8080/user/find?username=XXXX */
+
+    @GetMapping(path = "/find", params = "username")
+    public ResponseEntity<?> findByName(@RequestParam String username) {
+
+        var result = userService.findByName(username);
+        return ResponseEntity.of(result);
+
+    }
+
+    /**CALL: localhost:8080/user/find?email=XXXX */
+
+    @GetMapping(path = "/find", params = "email")
+    public ResponseEntity<?> findUsingEmail(@RequestParam String email) {
+        var result = userService.findUserByEmail(email);
+        return ResponseEntity.of(result);
+    }
 }

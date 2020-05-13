@@ -70,8 +70,12 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.8</version>
         </dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -109,7 +113,6 @@
 					<target>13</target>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 
