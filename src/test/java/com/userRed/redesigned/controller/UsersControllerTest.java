@@ -85,16 +85,16 @@ class UsersControllerTest {
     }
 
 
-    @Test
+/*    @Test
     void testCannotRegisterWithExistingEmail_thenReturnsHttpCONFLICT() throws Exception{
         Users tmpUsr = makeTestUser();
-        tmpUsr.setEmail("tobbe@tobbe.se");
+        tmpUsr.setEmail("smth@hotmail.com");
 
-        mockMvc.perform(post("http://localhost:8080/user/register", 42L)
+        mockMvc.perform(post("http://localhost:8080/user/registerWithMail", 42L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tmpUsr)))
                 .andExpect(status().isConflict());
-    }
+    }*/
 
 
 
