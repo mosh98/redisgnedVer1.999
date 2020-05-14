@@ -29,6 +29,9 @@ https://redesigned-backend.herokuapp.com/registerWithMail
 	"gender_type": "FEMALE"
 }
 
+POST login user
+https://redesigned-backend.herokuapp.com/user/login?username=XXXX&password=XXXX
+
 PUT update user description
 
 https://redesigned-backend.herokuapp.com/user/update?username=XXXX&description=XXXXX 
