@@ -23,7 +23,7 @@ public class DogService {
 
     public ResponseEntity<?> saveDog(Dog dog, String ownerName) {
 
-        Optional<Users> owner = myUserDetailsService.findByName(ownerName);//gets by username
+        Optional<Users> owner = myUserDetailsService.findByUsername(ownerName);//gets by username
         dog.setOwner(owner.get());
 
         return ResponseEntity.ok(repository.save(dog));
@@ -32,7 +32,7 @@ public class DogService {
     public List<Dog> getDogs(String ownerUsername){
 
         //get everthing from repo
-        Optional<Users> owner = myUserDetailsService.findByName(ownerUsername);//gets by username
+        Optional<Users> owner = myUserDetailsService.findByUsername(ownerUsername);//gets by username
         //get's owner Id
 
         //uses repor

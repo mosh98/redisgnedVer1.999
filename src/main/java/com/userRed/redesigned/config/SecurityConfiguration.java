@@ -3,9 +3,11 @@ package com.userRed.redesigned.config;
 import com.userRed.redesigned.repository.UsersRepository;
 import com.userRed.redesigned.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -25,6 +27,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final MyUserDetailsService myUserDetailsService;
 
+    private AuthenticationProvider authenticationProvider;
+
+    @Autowired
+    @Qualifier("daoAuthenticationProvider")
+    public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
+        this.authenticationProvider = authenticationProvider;
+    }
 
     @Autowired
     public SecurityConfiguration(PasswordEncoder passwordEncoder,
@@ -69,6 +78,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
+
+
+   /* @Bean
+    public PasswordEncoder passwordEncoder(StrongPasswordEncryptor passwordEncryptor){
+        PasswordEncoder passwordEncoder = new PasswordEncoder();
+        passwordEncoder.setPasswordEncryptor(passwordEncryptor);
+        return passwordEncoder;
+    }*/
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {

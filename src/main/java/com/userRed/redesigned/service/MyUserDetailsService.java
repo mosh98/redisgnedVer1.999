@@ -1,16 +1,14 @@
 package com.userRed.redesigned.service;
 
 
-import com.userRed.redesigned.auth.RedesignedApplicationUserDAO;
-import com.userRed.redesigned.auth.RedsignedApplicationUser;
 import com.userRed.redesigned.model.Users;
-import com.userRed.redesigned.repository.DogRepository;
 import com.userRed.redesigned.repository.UsersRepository;
 import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +21,6 @@ import java.util.Optional;
 public class MyUserDetailsService implements UserDetailsService {
 
 
-    private final RedesignedApplicationUserDAO applicationUserDAO;
 
     @Autowired
     private UsersRepository usersRepository;
@@ -31,18 +28,30 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     private PasswordEncoder bcryptEncoder;
 
-    public MyUserDetailsService(@Qualifier("UsersRepository") RedesignedApplicationUserDAO applicationUserDAO){
-        this.applicationUserDAO=applicationUserDAO;
+
+    public ResponseEntity<?> verify(String usrname, String password){
+
+        Optional<Users> ussr = findByUsername(usrname);
+        String encryptedPass = bcryptEncoder.encode( password );
+
+        if(ussr.get().getPassword().equals(encryptedPass)){
+            return ResponseEntity.ok("User Granted");
+        }
+
+
+        return ResponseEntity.of(ussr);
     }
 
-    public Optional<Users> findByName(String username) {
+    public Optional<Users> findByUsername(String username) {
         return usersRepository.findByUsername(username);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return applicationUserDAO.selecAppUser(username).orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s",username)));
+
+        return null;
     }
+
 
     public ResponseEntity<?> save(Users usrParam) throws Exception, HttpException {
 
