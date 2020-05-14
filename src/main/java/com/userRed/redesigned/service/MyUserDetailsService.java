@@ -1,16 +1,20 @@
 package com.userRed.redesigned.service;
 
 
+import com.userRed.redesigned.auth.RedesignedApplicationUserDAO;
+import com.userRed.redesigned.auth.RedsignedApplicationUser;
 import com.userRed.redesigned.model.Users;
 import com.userRed.redesigned.repository.DogRepository;
 import com.userRed.redesigned.repository.UsersRepository;
 import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -18,8 +22,18 @@ import java.util.Optional;
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
+
+    private final RedesignedApplicationUserDAO applicationUserDAO;
+
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private PasswordEncoder bcryptEncoder;
+
+    public MyUserDetailsService(@Qualifier("UsersRepository") RedesignedApplicationUserDAO applicationUserDAO){
+        this.applicationUserDAO=applicationUserDAO;
+    }
 
     public Optional<Users> findByName(String username) {
         return usersRepository.findByUsername(username);
@@ -27,7 +41,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        return applicationUserDAO.selecAppUser(username).orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s",username)));
     }
 
     public ResponseEntity<?> save(Users usrParam) throws Exception, HttpException {
@@ -40,7 +54,10 @@ public class MyUserDetailsService implements UserDetailsService {
         int size = usrParam.getUsername().toCharArray().length;
         if(size >= 30) return new ResponseEntity<>("username cannot be bigger than or equal to 30",HttpStatus.NOT_ACCEPTABLE);
 
+        String encryptedPass = bcryptEncoder.encode( usrParam.getPassword() );
+
         usrParam.setCreatedAt();
+        usrParam.setPassword(encryptedPass);
         usrParam.setDescription("Write something about yourself!");
         return ResponseEntity.ok(usersRepository.save(usrParam));
     }
@@ -104,5 +121,10 @@ public class MyUserDetailsService implements UserDetailsService {
 
         user.get().setEmail(email);
         return ResponseEntity.ok(usersRepository.save(user.get()));
+    }
+
+    public ResponseEntity<?> login(String username, String password){
+
+        return ResponseEntity.ok("authenticated");
     }
 }
