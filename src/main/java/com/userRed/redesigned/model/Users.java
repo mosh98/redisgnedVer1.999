@@ -1,6 +1,8 @@
 package com.userRed.redesigned.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
@@ -9,6 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 public class Users {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

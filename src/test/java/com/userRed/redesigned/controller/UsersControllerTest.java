@@ -1,5 +1,6 @@
 package com.userRed.redesigned.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.userRed.redesigned.model.Users;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,45 @@ class UsersControllerTest {
         us.setGender_type("FEMALE");
         us.setCreatedAt();
         return us;
+    }
+
+    public Users makeTestUserBoilerplate(
+            String username,
+            String password,
+            String email,
+            String dateOfBirth,
+            String genderType){
+
+        Users ussr = new Users();
+        ussr.setUsername(username);
+        ussr.setEmail(email);
+        ussr.setPassword(password);
+        ussr.setDate_of_birth(dateOfBirth);
+        ussr.setGender_type(genderType);
+
+        return ussr;
+    }
+
+    @Test
+    void testLoginAndDelete_thenReturns200OK() throws Exception {
+
+        String tmpUsername;
+        //make users
+       Users tmpUsr =  makeTestUserBoilerplate("testusername","1234MMM","smth@tobbe.se","2020-03-03","FEMALE");
+       tmpUsername = tmpUsr.getUsername();
+
+
+        mockMvc.perform(post("http://localhost:8080/user/register", 42L)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(tmpUsr)))
+                .andExpect(status().isNotAcceptable());
+
+        //login with users
+
+        // delete users
+
+        //check
+
     }
 
     @Test
