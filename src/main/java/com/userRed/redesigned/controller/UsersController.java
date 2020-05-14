@@ -2,11 +2,15 @@ package com.userRed.redesigned.controller;
 
 import com.userRed.redesigned.model.Dog;
 import com.userRed.redesigned.model.Users;
-import com.userRed.redesigned.repository.UsersRepository;
 import com.userRed.redesigned.service.DogService;
 import com.userRed.redesigned.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -14,17 +18,42 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/user")
 public class UsersController {
 
+/*
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+*/
+
 
     @Autowired
     MyUserDetailsService userService;
 
-    @Autowired
-    UsersRepository usersRepository;
+
 
     @Autowired
     private DogService dogService;
 
     // POST MAPPINGS
+
+    @PostMapping(path = "/login", params = { "username", "password"})
+    public ResponseEntity<?>  login(@RequestParam String username, @RequestParam String password) throws Exception {
+
+
+
+        // val token = jwtTokenUtil.generateToken(userDetails);
+        return ResponseEntity.ok( userService.verify(username,password));
+    }
+
+/*
+    private void authenticate(String username, String password) throws Exception {
+        try {
+              authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
+    }*/
 
     /**CALL: localhost:8080/user/register */
 
@@ -47,6 +76,9 @@ public class UsersController {
 
         return dogService.saveDog(dog, owner);
     }
+
+
+
 
     // PUT MAPPINGS
 
@@ -81,9 +113,7 @@ public class UsersController {
 
     @PutMapping(path = "update", params = {"username", "email"})
     public ResponseEntity<?> updateEmail(@RequestParam("username") String username,@RequestParam("email") String email) {
-
         return ResponseEntity.ok(userService.updateEmail(username, email));
-
     }
 
     // GET MAPPINGS
@@ -100,7 +130,7 @@ public class UsersController {
     @GetMapping(path = "/find", params = "username")
     public ResponseEntity<?> findByName(@RequestParam String username) {
 
-        var result = userService.findByName(username);
+        var result = userService.findByUsername(username);
         return ResponseEntity.of(result);
 
     }
@@ -112,4 +142,11 @@ public class UsersController {
         var result = userService.findUserByEmail(email);
         return ResponseEntity.of(result);
     }
+
+
+
+
+
+
+
 }
