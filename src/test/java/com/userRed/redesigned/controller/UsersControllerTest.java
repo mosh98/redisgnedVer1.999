@@ -56,7 +56,7 @@ class UsersControllerTest {
         return ussr;
     }
 
-    @Test
+  /*  @Test
     void testLoginAndDelete_thenReturns200OK() throws Exception {
 
         String tmpUsername;
@@ -76,7 +76,7 @@ class UsersControllerTest {
 
         //check
 
-    }
+    }*/
 
     @Test
     void testBiggerThan30CharactersUsername() throws Exception {
