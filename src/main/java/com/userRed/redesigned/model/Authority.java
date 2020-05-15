@@ -22,12 +22,12 @@ public class Authority {
 	public Authority(String name) {
 		this.name = name;
 	}
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String name;
-	
-	@OneToMany(mappedBy="authorities") //, cascade=CascadeType.ALL)
+
+	@OneToMany(mappedBy = "authorities") // , cascade=CascadeType.ALL)
 	private Collection<Role> roles;
 }

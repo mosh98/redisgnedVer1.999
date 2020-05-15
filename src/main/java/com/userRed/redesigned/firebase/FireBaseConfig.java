@@ -47,7 +47,7 @@ public class FireBaseConfig {
 	private void initializeFireBase() throws IOException {
 		FirebaseApp.initializeApp(fireBaseOptions);
 		log.info("Firebase application " + FirebaseApp.getInstance()
-		.getName() + " initialized.");
+				.getName() + " initialized.");
 	}
 
 	private void createFireBaseOptions() throws IOException {

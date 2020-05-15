@@ -5,12 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface DogRepository extends JpaRepository<Dog,Integer> {
-     Dog findByDogId(long id);
+public interface DogRepository extends JpaRepository<Dog, Integer> {
+	Dog findByDogId(long id);
 
-     Dog findByOwner(String owner);
+	Dog findByOwner(String owner);
 
-     List<Dog> findAllByOwner_Id(long id);
-
+	List<Dog> findAllByOwner_Id(long id);
 
 }

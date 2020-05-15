@@ -12,32 +12,34 @@ import java.util.Optional;
 @Service
 public class DogService {
 
-    @Autowired
-    private DogRepository repository;
+	@Autowired
+	private DogRepository repository;
 
-    @Autowired
-    MyUserDetailsService userService;
+	@Autowired
+	MyUserDetailsService userService;
 
-    public String saveDog(Dog dogParam, String ownername) {
-        Optional<Users> owner = userService.findByName(ownername);//gets by username
-        dogParam.setOwner(owner.get());
+	public String saveDog(	Dog dogParam,
+							String ownername) {
+		Optional<Users> owner = userService.findByName(ownername);// gets by username
+		dogParam.setOwner(owner.get());
 
-        repository.save(dogParam);
-        return dogParam.getName();
-    }
+		repository.save(dogParam);
+		return dogParam.getName();
+	}
 
-    public List<Dog> getDogs(String ownerUsername){
+	public List<Dog> getDogs(String ownerUsername) {
 
-        //get everthing from repo
-        Optional<Users> owner = userService.findByName(ownerUsername);//gets by username
-        //get's owner Id
+		// get everthing from repo
+		Optional<Users> owner = userService.findByName(ownerUsername);// gets by username
+		// get's owner Id
 
-        //uses repor
-        long id = owner.get().getId();
-       List<Dog> ownersDogs = repository.findAllByOwner_Id(id);
+		// uses repor
+		long id = owner.get()
+				.getId();
+		List<Dog> ownersDogs = repository.findAllByOwner_Id(id);
 
-        //return buildOptional(result)
+		// return buildOptional(result)
 
-        return ownersDogs;
-    }
+		return ownersDogs;
+	}
 }

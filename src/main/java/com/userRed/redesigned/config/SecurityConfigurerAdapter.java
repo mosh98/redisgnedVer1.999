@@ -58,8 +58,9 @@ public class SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 				// addFilterAfter(new CustomAuthenticationTokenFilter(),
 				// CustomAuthenticationFilter.class)
 				.authorizeRequests()
-				.antMatchers("/user/**").hasRole("ADMIN")
-//				.permitAll() // .hasRole("USER")
+				.antMatchers("/**")
+//				.hasRole("ADMIN")
+				.permitAll() // .hasRole("USER")
 //				.hasAuthority("ADdMIN") //.denyAll()
 				// .hasAuthority("ADFGDFG")
 //				.permitAll()

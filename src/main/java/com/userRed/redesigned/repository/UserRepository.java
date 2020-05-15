@@ -12,14 +12,14 @@ import com.userRed.redesigned.model.User;
 public interface UserRepository extends CrudRepository<User, Long> {
 
 	public List<com.userRed.redesigned.model.User> findAll();
-	
+
 	public Optional<User> findByUsername(String username);
-	
+
 	public Optional<User> findByEmail(String email);
-	
+
 	public User save(User user);
 
 	public boolean existsByUsername(String username);
-	
+
 	public boolean existsByEmail(String email);
 }

@@ -28,12 +28,12 @@ public class FireBaseAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		log.info("Authenticating...");
-		
+
 		val fireBaseAuthenticationToken = (FireBaseAuthenticationToken) authentication;
-		
+
 		try {
 			// debug only, normally uid is fetched from firebase as below.
-			String uid = "b4OwvLmxWYNLxR3p3dzt9df10DL2";			
+			String uid = "b4OwvLmxWYNLxR3p3dzt9df10DL2";
 //			String uid = verifyIdToken(fireBaseAuthenticationToken.getIdToken());
 
 			UserRecord userRecord = FirebaseAuth.getInstance()
@@ -63,7 +63,8 @@ public class FireBaseAuthenticationProvider implements AuthenticationProvider {
 		throw new BadCredentialsException("Authentication failed.");
 
 //		return null;		// osäker på om authentication är trusted eller inte 
-		//men då appen bara har firebase auth så ska den kasta ett exception om auth inte går igenom.
+		// men då appen bara har firebase auth så ska den kasta ett exception om auth
+		// inte går igenom.
 	}
 
 	private String verifyIdToken(String idToken) throws FirebaseAuthException {

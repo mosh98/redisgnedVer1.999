@@ -34,7 +34,7 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	private FireBaseService fireBaseService;
 
@@ -54,7 +54,8 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
-	// Collect user roles and all authorities included in each role. User has role(s), role has authority(ies).
+	// Collect user roles and all authorities included in each role. User has
+	// role(s), role has authority(ies).
 	private Collection<SimpleGrantedAuthority> getGrantedAuthorities(User user) {
 		var authorities = new HashSet<SimpleGrantedAuthority>();
 		for (Role role : user.getRoles()) {
@@ -69,7 +70,7 @@ public class UserService implements UserDetailsService {
 	public List<User> getAllUsers() {
 //		return userRepository.findAll();
 		var users = userRepository.findAll();
-		for(User user : users) {
+		for (User user : users) {
 			user.setAuthorities(getGrantedAuthorities(user));
 		}
 		return users;
@@ -112,10 +113,10 @@ public class UserService implements UserDetailsService {
 				.setAccountNonLocked(true)
 				.setCredentialsNonExpired(true)
 				.setEnabled(true)
-			//	Role role = roleRepository.findByName(name);
+				// Role role = roleRepository.findByName(name);
 
 				.setRoles(roleRepository.findByName("ROLE_USER"));
-				
+
 		userRepository.save(user);
 		return user;
 	}

@@ -34,7 +34,7 @@ public class Role {
 	private Long id;
 	private String name;
 
-	@ManyToMany(fetch = FetchType.EAGER) //, cascade=CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER) // , cascade=CascadeType.ALL)
 	@JoinTable(name = "roles_authorities",
 			joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
