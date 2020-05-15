@@ -64,10 +64,16 @@ public class User implements UserDetails {
 //    @Column(name = "acc_created")
 //    private String createdAt;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "user_dogs",
-			joinColumns = @JoinColumn(name = "user_id"),
-			inverseJoinColumns = @JoinColumn(name = "dog_id"))
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	@JoinTable(name = "user_dogs",
+//			joinColumns = @JoinColumn(name = "user_id"),
+//			inverseJoinColumns = @JoinColumn(name = "dog_id"))
+
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "users_dogs",
+			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "id"))
+
 	private Set<Dog> dogList;
 	private String date_of_birth;
 	private String gender_type;

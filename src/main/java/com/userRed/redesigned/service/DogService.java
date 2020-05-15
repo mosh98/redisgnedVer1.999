@@ -20,7 +20,7 @@ public class DogService {
 	private DogRepository repository;
 
 	@Autowired
-	MyUserDetailsService myUserDetailsService;
+	UserService myUserDetailsService;
 
 	public ResponseEntity<?> saveDog(	Dog dog,
 										String ownerName) {
