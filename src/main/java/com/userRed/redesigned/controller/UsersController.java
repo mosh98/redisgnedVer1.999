@@ -5,13 +5,12 @@ import com.userRed.redesigned.model.Users;
 import com.userRed.redesigned.service.DogService;
 import com.userRed.redesigned.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -141,6 +140,13 @@ public class UsersController {
     public ResponseEntity<?> findUsingEmail(@RequestParam String email) {
         var result = userService.findUserByEmail(email);
         return ResponseEntity.of(result);
+    }
+        /** GET : http://localhost:8080/user/query?username=XXX*/
+    @GetMapping("/query")
+    public Page<Users> getAllByQuery(
+            @RequestParam(value = "name", required = false) String name,
+            Pageable pageable) {
+        return  userService.getByQuery(name, pageable);
     }
 
 
