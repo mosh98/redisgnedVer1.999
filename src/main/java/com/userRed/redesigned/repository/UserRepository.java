@@ -11,7 +11,7 @@ import com.userRed.redesigned.model.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-	public List<com.userRed.redesigned.model.User> findAll();
+	public List<User> findAll();
 
 	public Optional<User> findByUsername(String username);
 

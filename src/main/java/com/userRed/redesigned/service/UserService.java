@@ -21,7 +21,6 @@ import com.userRed.redesigned.model.Role;
 import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.repository.RoleRepository;
 import com.userRed.redesigned.repository.UserRepository;
-import com.userRed.redesigned.repository.UsersRepository;
 
 import lombok.extern.java.Log;
 
@@ -42,7 +41,7 @@ public class UserService implements UserDetailsService {
 	private PasswordEncoder passwordEncoder;
 
 	@Override
-	public com.userRed.redesigned.model.User loadUserByUsername(String username) throws UsernameNotFoundException {
+	public User loadUserByUsername(String username) throws UsernameNotFoundException {
 		return userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found.", username)));
 	}
