@@ -46,11 +46,11 @@ public class FireBaseAuthenticationTokenFilter extends OncePerRequestFilter {
 					(FireBaseAuthenticationToken) authenticationManager.authenticate(fireBaseAuthenticationToken);
 			SecurityContextHolder.getContext()
 					.setAuthentication(fireBaseAuthentication);
-			filterChain.doFilter(request, response);
+//			filterChain.doFilter(request, response);
 		}
-		throw new SecurityException("Authentication failed, not bearer-token!");
+//		throw new SecurityException("Authentication failed, not bearer-token!");
 //		log.info("...proceding to next filter in chain.");
-//		filterChain.doFilter(request, response);
+		filterChain.doFilter(request, response);
 	}
 
 }

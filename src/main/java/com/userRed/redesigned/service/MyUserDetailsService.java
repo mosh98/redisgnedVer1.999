@@ -18,10 +18,10 @@ public class MyUserDetailsService implements UserDetailsService {
 	@Autowired
 	private UsersRepository usersRepository;
 
-	public List<Users> findAll(){
+	public List<Users> findAll() {
 		return usersRepository.findAll();
 	}
-	
+
 	public Optional<Users> findByName(String username) {
 		return usersRepository.findByUsername(username);
 	}
