@@ -21,6 +21,7 @@ public class Users {
     @Column(name = "email")
     @Email
     private String email;
+    @JsonIgnore
     @Column(name = "password")
     private String password;
     @Column(name = "date_of_birth")
@@ -31,6 +32,7 @@ public class Users {
     private String description;
     @Column(name = "acc_created")
     private String createdAt;
+
 
 //....
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

@@ -1,14 +1,16 @@
 package com.userRed.redesigned.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.userRed.redesigned.model.Users;
 import com.userRed.redesigned.repository.UsersRepository;
 import org.apache.http.HttpException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +29,10 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder bcryptEncoder;
+
+    @Autowired
+    ObjectMapper mapper;
+
 
 
     public ResponseEntity<?> verify(String usrname, String password){
@@ -132,8 +138,9 @@ public class MyUserDetailsService implements UserDetailsService {
         return ResponseEntity.ok(usersRepository.save(user.get()));
     }
 
-    public ResponseEntity<?> login(String username, String password){
-
-        return ResponseEntity.ok("authenticated");
+    public Page<Users> getByQuery(String name, Pageable pageable) {
+       return usersRepository.findAllByUsername(name, pageable).map(Users::new);
     }
+
+
 }
