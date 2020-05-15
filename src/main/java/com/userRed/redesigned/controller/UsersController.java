@@ -1,16 +1,19 @@
 package com.userRed.redesigned.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.userRed.redesigned.model.Dog;
-import com.userRed.redesigned.model.Users;
+import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.service.DogService;
 import com.userRed.redesigned.service.MyUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -57,14 +60,14 @@ public class UsersController {
     /**CALL: localhost:8080/user/register */
 
     @PostMapping(path = "/register")
-    public ResponseEntity<?> registerUser(@RequestBody Users users) throws Exception {
+    public ResponseEntity<?> registerUser(@RequestBody User users) throws Exception {
         return userService.save(users);
     }
 
     /**CALL: localhost:8080/user/registerWithMail */
 
     @PostMapping(path= "/registerWithMail")
-    public ResponseEntity<?> registerUsingMail(@RequestBody Users users){
+    public ResponseEntity<?> registerUsingMail(@RequestBody User users){
         return userService.saveUsingEmail(users);
     }
 
@@ -141,13 +144,13 @@ public class UsersController {
         var result = userService.findUserByEmail(email);
         return ResponseEntity.of(result);
     }
-        /** GET : http://localhost:8080/user/query?username=XXX*/
-    @GetMapping("/query")
-    public Page<Users> getAllByQuery(
-            @RequestParam(value = "username", required = false) String username,
-            Pageable pageable) {
-        return  userService.getByQuery(username, pageable);
-    }
+//        /** GET : http://localhost:8080/user/query?username=XXX*/
+//    @GetMapping("/query")
+//    public Page<Users> getAllByQuery(
+//            @RequestParam(value = "username", required = false) String username,
+//            Pageable pageable) {
+//        return  userService.getByQuery(username, pageable);
+//    }
 
 
 
