@@ -55,6 +55,7 @@ class UsersControllerTest {
 
         return ussr;
     }
+    //pro
 
   /*  @Test
     void testLoginAndDelete_thenReturns200OK() throws Exception {
