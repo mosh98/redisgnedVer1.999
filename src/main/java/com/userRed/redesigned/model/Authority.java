@@ -2,6 +2,7 @@ package com.userRed.redesigned.model;
 
 import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +11,8 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 
 import org.checkerframework.common.aliasing.qual.Unique;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +32,10 @@ public class Authority {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	@NotBlank
-	@Unique
+	@Column(unique = true)
 	private String name;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="authorities") //, cascade=CascadeType.ALL)
 	private Collection<Role> roles;
 }

@@ -7,7 +7,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,12 +23,12 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import org.checkerframework.common.aliasing.qual.Unique;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.userRed.redesigned.enums.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,6 +45,8 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @ToString
 public class User implements UserDetails {
+
+	private static final long serialVersionUID = 1L;
 
 //    @JsonIgnore
 //    @Id
@@ -72,12 +77,17 @@ public class User implements UserDetails {
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "users_dogs",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "id"))
+			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "dog_id"))
+	private Set<Dog> dogs;
 
-	private Set<Dog> dogList;
+//	@PastOrPresent
 	private String date_of_birth;
-	private String gender_type;
+
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
 	private String description;
+//	@PastOrPresent
+	@Column(name = "acc_created")
 	private String createdAt;
 
 	@Id
@@ -86,10 +96,8 @@ public class User implements UserDetails {
 	private Long id;
 	private String userId;
 	@NotBlank
-	@Unique
 	private String username;
 	@NotBlank
-	@Unique
 	@Email
 	private String email; // FB
 	private String phoneNumber; // FB
@@ -113,6 +121,7 @@ public class User implements UserDetails {
 	@Transient
 	private Collection<SimpleGrantedAuthority> authorities;
 
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
@@ -130,10 +139,10 @@ public class User implements UserDetails {
 	}
 
 	public void setCreatedAt() {
-		LocalDate tim = LocalDate.now();
-		this.createdAt = tim.toString();
+		createdAt = LocalDate.now().toString();
 	}
-// var authorities = roles.stream()
+
+	// var authorities = roles.stream()
 //				.map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole()))
 //				.collect(Collectors.toSet());
 }

@@ -19,10 +19,10 @@ import lombok.extern.java.Log;
 @Log
 public class FireBaseAuthenticationProvider implements AuthenticationProvider {
 
-	private final UserService userDetailsService;
+	private final UserService userService;
 
-	public FireBaseAuthenticationProvider(UserService userDetailsService) {
-		this.userDetailsService = userDetailsService;
+	public FireBaseAuthenticationProvider(UserService userService) {
+		this.userService = userService;
 	}
 
 	@Override
@@ -40,12 +40,9 @@ public class FireBaseAuthenticationProvider implements AuthenticationProvider {
 					.getUser(uid);
 
 			// debug only
-			displayUserRecord(userRecord);
+//			displayUserRecord(userRecord);
 
-			val user = userDetailsService.loadUserByEmail(userRecord.getEmail());
-			for (GrantedAuthority auth : user.getAuthorities()) {
-				System.out.println(auth.toString());
-			}
+			val user = userService.loadUserByEmail(userRecord.getEmail());
 
 			log.info("...authenticated!");
 			return new FireBaseAuthenticationToken(user.getUsername(), null, user, user.getAuthorities(), true);
@@ -56,11 +53,11 @@ public class FireBaseAuthenticationProvider implements AuthenticationProvider {
 																							 // SecurityException(e.getMessage());
 		} catch (UsernameNotFoundException e) {
 			log.warning("...failed to find user");
-			log.warning(e.getMessage()); // "Username not found.");
+			log.warning(e.getMessage());
 			throw new BadCredentialsException(e.getMessage());
 		}
 		log.warning("...failed to authenticate!");
-		throw new BadCredentialsException("Authentication failed.");
+		throw new BadCredentialsException("Authentication failed, invalid idToken.");
 
 //		return null;		// osäker på om authentication är trusted eller inte 
 		// men då appen bara har firebase auth så ska den kasta ett exception om auth

@@ -2,6 +2,7 @@ package com.userRed.redesigned.model;
 
 import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -34,7 +35,7 @@ public class Role {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	@NotBlank
-	@Unique
+	@Column(unique = true)
 	private String name;
 
 	@ManyToMany(fetch = FetchType.EAGER) //, cascade=CascadeType.ALL)

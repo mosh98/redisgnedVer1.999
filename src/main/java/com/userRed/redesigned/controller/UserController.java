@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import com.userRed.redesigned.model.Dog;
+import com.userRed.redesigned.model.Role;
 import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.request.UserRequest;
 import com.userRed.redesigned.service.DogService;
@@ -28,7 +29,7 @@ import lombok.extern.java.Log;
 public class UserController {
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
     @Autowired
     private DogService dogService;
@@ -164,8 +165,8 @@ public class UserController {
 //
 //		var req = new User().setUsername(request.getUsername())
 //				.setPassword(request.getPassword())
-//				.setEmail(request.getEmail())
-//				.setRoles(new Role("ROLE_USER"));
+//				.setEmail(request.getEmail());
+////				.setRoles(new Role("ROLE_USER"));
 //		var user = (userService.registerNewUser(req));
 //		var result = Optional.ofNullable(user);
 //		return ResponseEntity.of(result);

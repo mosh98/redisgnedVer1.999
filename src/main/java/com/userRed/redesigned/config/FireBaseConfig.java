@@ -2,15 +2,16 @@ package com.userRed.redesigned.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import lombok.extern.java.Log;
 
@@ -20,7 +21,7 @@ public class FireBaseConfig {
 
 	private InputStream inputStream;
 	private FirebaseOptions fireBaseOptions;
-
+	
 	@PostConstruct
 	public void fireBaseInitialization() throws Exception {
 		if (isFireBaseRunning()) {

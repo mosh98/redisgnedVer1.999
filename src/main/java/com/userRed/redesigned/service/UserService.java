@@ -1,20 +1,29 @@
 package com.userRed.redesigned.service;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,120 +47,129 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	private FireBaseService fireBaseService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    ObjectMapper mapper;
+	@Autowired
+	ObjectMapper mapper;
 
+	public ResponseEntity<?> verify(String usrname,
+									String password) {
 
+		Optional<User> ussr = findByUsername(usrname);
+		String encryptedPass = passwordEncoder.encode(password);
 
-    public ResponseEntity<?> verify(String usrname, String password){
+		if (ussr.get()
+				.getPassword()
+				.equals(encryptedPass)) {
+			return ResponseEntity.ok("User Granted");
+		}
 
-        Optional<User> ussr = findByUsername(usrname);
-        String encryptedPass = passwordEncoder.encode( password );
+		return ResponseEntity.of(ussr);
+	}
 
-        if(ussr.get().getPassword().equals(encryptedPass)){
-            return ResponseEntity.ok("User Granted");
-        }
+	public Optional<User> findByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
 
+	public ResponseEntity<?> save(User usrParam) throws Exception,
+			HttpException {
 
-        return ResponseEntity.of(ussr);
-    }
+		boolean existsByUserName = userRepository.existsByUsername(usrParam.getUsername());
+		System.out.println(existsByUserName);
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+		if (existsByUserName)
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//
-//        return null;
-//    }
+		int size = usrParam.getUsername()
+				.toCharArray().length;
+		if (size >= 30)
+			return new ResponseEntity<>("username cannot be bigger than or equal to 30", HttpStatus.NOT_ACCEPTABLE);
 
+		String encryptedPass = passwordEncoder.encode(usrParam.getPassword());
 
-    public ResponseEntity<?> save(User usrParam) throws Exception, HttpException {
+		usrParam.setCreatedAt();
+		usrParam.setPassword(encryptedPass);
+		usrParam.setDescription("Write something about yourself!");
+		return ResponseEntity.ok(userRepository.save(usrParam));
+	}
 
-        boolean existsByUserName = userRepository.existsByUsername(usrParam.getUsername());
-        System.out.println(existsByUserName);
+	private String extractUsername(String smth) {
+		String[] parts = smth.split("@");
+		return parts[0];
+	}
 
-        if(existsByUserName) return new ResponseEntity<>(HttpStatus.CONFLICT);
+	public ResponseEntity<?> saveUsingEmail(User paramUsr) {
+		// should throw exception when paramUsr has null as mail
 
-        int size = usrParam.getUsername().toCharArray().length;
-        if(size >= 30) return new ResponseEntity<>("username cannot be bigger than or equal to 30",HttpStatus.NOT_ACCEPTABLE);
+		boolean emailEmpty = paramUsr.getEmail()
+				.trim()
+				.isEmpty();
+		if (emailEmpty)
+			return new ResponseEntity<>("ERROR: Email Cannot be empty", HttpStatus.UNAUTHORIZED);
 
-        String encryptedPass = passwordEncoder.encode( usrParam.getPassword() );
+		if (!paramUsr.getEmail()
+				.contains("@"))
+			return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
 
-        usrParam.setCreatedAt();
-        usrParam.setPassword(encryptedPass);
-        usrParam.setDescription("Write something about yourself!");
-        return ResponseEntity.ok(userRepository.save(usrParam));
-    }
+		paramUsr.setCreatedAt();
+		paramUsr.setDescription("Write something about yourself!");
+		paramUsr.setUsername(extractUsername(paramUsr.getEmail()));
 
-    private String extractUsername(String smth){
-        String[] parts = smth.split("@");
-        return parts[0];
-    }
+		return ResponseEntity.ok(userRepository.save(paramUsr));
+	}
 
-    public ResponseEntity<?> saveUsingEmail(User paramUsr){
-        //should throw exception when paramUsr has null as mail
+	public Optional<User> findUserByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
 
-        boolean emailEmpty = paramUsr.getEmail().trim().isEmpty();
-        if(emailEmpty)
-            return new ResponseEntity<>("ERROR: Email Cannot be empty",HttpStatus.UNAUTHORIZED);
+	public ResponseEntity<?> updateUserDescription(	String username,
+													String description) {
 
-        if(! paramUsr.getEmail().contains("@"))
-            return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
+		Optional<User> user = userRepository.findByUsername(username);
+		user.get()
+				.setDescription(description);
 
-        paramUsr.setCreatedAt();
-        paramUsr.setDescription("Write something about yourself!");
-        paramUsr.setUsername(extractUsername(paramUsr.getEmail()));
+		return ResponseEntity.ok(userRepository.save(user.get()));
+	}
 
-        return ResponseEntity.ok(userRepository.save(paramUsr));
-    }
+	public ResponseEntity<?> updatePassword(String username,
+											String password) {
 
-    public Optional<User> findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+		Optional<User> user = userRepository.findByUsername(username);
+		user.get()
+				.setPassword(password);
 
-    public ResponseEntity<?> updateUserDescription(String username, String description) {
+		return ResponseEntity.ok(userRepository.save(user.get()));
+	}
 
-        Optional<User> user = userRepository.findByUsername(username);
-        user.get().setDescription(description);
+	public ResponseEntity<?> updateDateOfBirth(	String username,
+												String dateOfBirth) {
+		Optional<User> user = userRepository.findByUsername(username);
+		if (user.isPresent()) {
+			user.get()
+					.setDate_of_birth(dateOfBirth);
+			userRepository.save(user.get());
+		}
+		return ResponseEntity.ok(userRepository.save(user.get()));
+	}
 
-        return ResponseEntity.ok(userRepository.save(user.get()));
-    }
+	public ResponseEntity<?> updateEmail(	String username,
+											String email) {
 
-    public ResponseEntity<?> updatePassword(String username, String password) {
+		Optional<User> user = userRepository.findByUsername(username);
 
-        Optional<User> user = userRepository.findByUsername(username);
-        user.get().setPassword(password);
+		if (!email.contains("@"))
+			return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
 
-        return ResponseEntity.ok(userRepository.save(user.get()));
-    }
-
-    public ResponseEntity<?> updateDateOfBirth(String username, String date_of_birth) {
-
-        Optional<User> user = userRepository.findByUsername(username);
-        user.get().setDate_of_birth(date_of_birth);
-
-        return ResponseEntity.ok(userRepository.save(user.get()));
-    }
-
-    public ResponseEntity<?> updateEmail(String username, String email) {
-
-        Optional<User> user = userRepository.findByUsername(username);
-
-        if(!email.contains("@"))
-            return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
-
-        user.get().setEmail(email);
-        return ResponseEntity.ok(userRepository.save(user.get()));
-    }
+		user.get()
+				.setEmail(email);
+		return ResponseEntity.ok(userRepository.save(user.get()));
+	}
 
 //    public Page<User> getByQuery(String name, Pageable pageable) {
 //       //return usersRepository.findAllByUsername(name, pageable).map(Users::new);
@@ -159,19 +177,24 @@ public class UserService implements UserDetailsService {
 //    }
 
 	@Override
-	public User loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found.", username)));
-	}
-
-	public User loadUserByEmail(String email) throws UsernameNotFoundException {
-		var user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new UsernameNotFoundException(String.format("Email %s not found.", email)));
+	public User loadUserByUsername(@Valid @NotBlank String username) throws UsernameNotFoundException {
+		var user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException(
+						String.format("User with username %s not found.", username)));
 		user.setAuthorities(getGrantedAuthorities(user));
 		return user;
 	}
 
-	// Collect user roles and all authorities included in each role. User has role(s), role has authority(ies).
+	public User loadUserByEmail(@Valid @NotBlank @Email String email) throws UsernameNotFoundException {
+		var user = userRepository.findByEmail(email)
+				.orElseThrow(
+						() -> new UsernameNotFoundException(String.format("User with email %s not found.", email)));
+		user.setAuthorities(getGrantedAuthorities(user));
+		return user;
+	}
+
+	// Collect user roles and all authorities included in each role. User has
+	// role(s), role has authority(ies).
 	private Collection<SimpleGrantedAuthority> getGrantedAuthorities(User user) {
 		var authorities = new HashSet<SimpleGrantedAuthority>();
 		for (Role role : user.getRoles()) {
@@ -183,10 +206,21 @@ public class UserService implements UserDetailsService {
 		return authorities;
 	}
 
+	 @RequestMapping(value = "/username", method = RequestMethod.GET)
+	    @ResponseBody
+	    public String currentUserNameSimple(HttpServletRequest request) {
+	        Principal principal = request.getUserPrincipal();
+	        return principal.getName();
+	    }
+	 
 	public List<User> getAllUsers() {
+		var name = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+			System.out.println(name.getEmail());
+			
 //		return userRepository.findAll();
 		var users = userRepository.findAll();
-		for(User user : users) {
+		for (User user : users) {
 			user.setAuthorities(getGrantedAuthorities(user));
 		}
 		return users;
@@ -229,10 +263,10 @@ public class UserService implements UserDetailsService {
 				.setAccountNonLocked(true)
 				.setCredentialsNonExpired(true)
 				.setEnabled(true)
-			//	Role role = roleRepository.findByName(name);
+				// Role role = roleRepository.findByName(name);
 
 				.setRoles(roleRepository.findByName("ROLE_USER"));
-				
+
 		userRepository.save(user);
 		return user;
 	}

@@ -8,9 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "dog")
 public class Dog {
 
@@ -45,9 +47,9 @@ public class Dog {
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    @JoinColumn(name = "user_id", nullable = false)
     
-	@OneToMany(fetch = FetchType.EAGER) //, cascade=CascadeType.ALL)
-	@JoinTable(name = "users_dogs",
-			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "id"))
+	@ManyToOne(fetch = FetchType.EAGER) //, cascade=CascadeType.ALL)
+//	@JoinTable(name = "users_dogs",
+//			joinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "dog_id"),
+//			inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private User owner;
 }

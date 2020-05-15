@@ -26,7 +26,7 @@ import lombok.extern.java.Log;
 public class FireBaseAuthenticationTokenFilter extends OncePerRequestFilter {
 
 	@Autowired
-	AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
@@ -40,15 +40,17 @@ public class FireBaseAuthenticationTokenFilter extends OncePerRequestFilter {
 
 		if (!Strings.isNullOrEmpty(authorization) && authorization.startsWith("Bearer ")) {
 			final String idToken = authorization.replace("Bearer ", "");
-			log.info("Bearer-token= " + idToken);
-			val fireBaseAuthenticationToken = new FireBaseAuthenticationToken(idToken);
-			val fireBaseAuthentication =
-					(FireBaseAuthenticationToken) authenticationManager.authenticate(fireBaseAuthenticationToken);
+			log.info("...found token...");
+			val fireBaseAuthenticationToken = (FireBaseAuthenticationToken) authenticationManager
+					.authenticate(new FireBaseAuthenticationToken(idToken));
 			SecurityContextHolder.getContext()
-					.setAuthentication(fireBaseAuthentication);
-		}
-		log.info("...proceding to next filter in chain.");
-		filterChain.doFilter(request, response);
-	}
+					.setAuthentication(fireBaseAuthenticationToken);
+			log.info("...done!");
+			filterChain.doFilter(request, response);
 
+		} else {
+			log.warning("...failed!");
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed, invalid token.");
+		}
+	}
 }
