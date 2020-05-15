@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.userRed.redesigned.model.Users;
 import com.userRed.redesigned.repository.UsersRepository;
 import org.apache.http.HttpException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -139,7 +138,8 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     public Page<Users> getByQuery(String name, Pageable pageable) {
-       return usersRepository.findAllByUsername(name, pageable).map(Users::new);
+       //return usersRepository.findAllByUsername(name, pageable).map(Users::new);
+       return usersRepository.getByQuery(name, pageable).map(Users::new);
     }
 
 

@@ -144,9 +144,9 @@ public class UsersController {
         /** GET : http://localhost:8080/user/query?username=XXX*/
     @GetMapping("/query")
     public Page<Users> getAllByQuery(
-            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "username", required = false) String username,
             Pageable pageable) {
-        return  userService.getByQuery(name, pageable);
+        return  userService.getByQuery(username, pageable);
     }
 
 
