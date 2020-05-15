@@ -119,3 +119,8 @@ https://redesigned-backend.herokuapp.com/find
 	}
 	
 	
+# Search 
+
+get users list by username (will be changed name in next iteration)
+https://redesigned-backend.herokuapp.com/user/query?username=user
+	
