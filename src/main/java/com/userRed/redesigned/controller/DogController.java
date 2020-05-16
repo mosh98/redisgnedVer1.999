@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.userRed.redesigned.enums.Gender;
+import com.userRed.redesigned.firebase.FireBaseAuthenticationToken;
 import com.userRed.redesigned.model.Dog;
 import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.repository.DogRepository;
@@ -35,23 +36,33 @@ public class DogController {
 	private DogRepository dogRepository;
 
 //  @PreAuthorize("hasRole('ADMIN')")
-//	@PreAuthorize("#username == authentication.principal.username")
+//@PreAuthorize("#username == authentication.principal.username")
 //   @Secured("ROLE_ADMIN")
 	@GetMapping(path = "/{name}")
-	public Optional<Dog> getDog(@PathVariable String name) {
+	public Optional<Dog> getDog(FireBaseAuthenticationToken authentication,
+								@PathVariable String name) {
 		var dog = dogRepository.findByName(name);
 		if (dog.isPresent()) {
-			log.info(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-			var user = (User) SecurityContextHolder.getContext()
+			log.info(SecurityContextHolder.getContext()
 					.getAuthentication()
-					.getPrincipal();
+					.getPrincipal()
+					.toString());
+			var user = (User) authentication.getPrincipal(); // (User) SecurityContextHolder.getContext()
+			// .getAuthentication()
+			// .getPrincipal();
 			log.info(user.getUsername());
-			log.info(dog.get().getName());
-			log.info(dog.get().toString());
-			if(user.getUsername().equals(dog.get().getOwner().getUsername())) {
+			log.info(dog.get()
+					.getName());
+			log.info(dog.get()
+					.toString());
+			if (user.getUsername()
+					.equals(dog.get()
+							.getOwner()
+							.getUsername())) {
 				log.info("FOUND DOG");
 				return dog;
 			}
+			throw new SecurityException(user.getUsername() + " is not the owner of " + dog.get().getName());
 //			log.info(user.getUsername());
 //			if (user.getUsername()
 //					.equals(dog.get()

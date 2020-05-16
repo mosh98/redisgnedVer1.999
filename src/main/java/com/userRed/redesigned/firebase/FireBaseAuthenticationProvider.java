@@ -33,8 +33,8 @@ public class FireBaseAuthenticationProvider implements AuthenticationProvider {
 
 		try {
 			// debug only, normally uid is fetched from firebase as below.
-//			String uid = "b4OwvLmxWYNLxR3p3dzt9df10DL2";
-			String uid = verifyIdToken(fireBaseAuthenticationToken.getIdToken());
+			String uid = "1fISL0B55WRZ6PNTCanL8IcZVom2"; //b4OwvLmxWYNLxR3p3dzt9df10DL2";
+//			String uid = verifyIdToken(fireBaseAuthenticationToken.getIdToken());
 
 			UserRecord userRecord = FirebaseAuth.getInstance()
 					.getUser(uid);
