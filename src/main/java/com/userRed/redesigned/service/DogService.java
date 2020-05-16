@@ -53,17 +53,17 @@ public class DogService {
 		return ResponseEntity.ok(repository.save(dog.get()));
 	}
 
-	public ResponseEntity<?> updateAgeOnDog(Long id,
-											int age) {
-		if (age >= 25)
-			return new ResponseEntity<>("Age should be lesser than 25", HttpStatus.NOT_ACCEPTABLE);
-
-		Optional<Dog> dog = repository.findById(id);
-		dog.get()
-				.setAge(age);
-
-		return ResponseEntity.ok(repository.save(dog.get()));
-	}
+//	public ResponseEntity<?> updateAgeOnDog(Long id,
+//											int age) {
+//		if (age >= 25)
+//			return new ResponseEntity<>("Age should be lesser than 25", HttpStatus.NOT_ACCEPTABLE);
+//
+//		Optional<Dog> dog = repository.findById(id);
+//		dog.get()
+//				.setAge(age);
+//
+//		return ResponseEntity.ok(repository.save(dog.get()));
+//	}
 
 	public ResponseEntity<?> updateBreedOnDog(	Long id,
 												String breed) {

@@ -6,13 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface DogRepository extends JpaRepository<Dog,Integer> {
+public interface DogRepository extends JpaRepository<Dog, Integer> {
 
-     Optional<Dog> findById(Long id);
+	Optional<Dog> findByName(String name);
 
-     List<Dog> findAllByOwner_Id(Long id);
+	Optional<Dog> findById(Long id);
 
-     Long deleteById(Long id);
+	List<Dog> findAllByOwner_Id(Long id);
 
+	Long deleteById(Long id);
 
 }

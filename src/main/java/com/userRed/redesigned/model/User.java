@@ -28,41 +28,23 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.userRed.redesigned.enums.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
+@SuppressWarnings("serial")
 @Entity
 @Getter
 @Setter
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class User implements UserDetails {
-
-	private static final long serialVersionUID = 1L;
-
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "users_dogs",
-			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "dog_id"))
-	private Set<Dog> dogs;
-
-	@PastOrPresent
-	private LocalDate dateOfBirth;
-
-	@Enumerated(EnumType.STRING)
-	private Gender gender;
-	private String description;
-	@PastOrPresent
-//	@Column(name = "acc_created")
-	private LocalDate createdAt;
 
 	@Id
 	@JsonIgnore
@@ -74,6 +56,13 @@ public class User implements UserDetails {
 	@NotBlank
 	@Email
 	private String email; // FB
+	@PastOrPresent
+	private LocalDate dateOfBirth;
+	@PastOrPresent
+	private LocalDate createdAt;
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+	private String description;
 	private String phoneNumber; // FB
 	@NotBlank
 	@JsonIgnore
@@ -81,17 +70,25 @@ public class User implements UserDetails {
 	private String displayName; // FB
 	private String photoUrl; // FB
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "users_roles",
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "users_dogs",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-	private Collection<Role> roles;
+			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "dog_id"))
+	@JsonManagedReference
+	private Set<Dog> dogs;
 
+	// extends userdetails
 	private boolean isAccountNonExpired;
 	private boolean isAccountNonLocked;
 	private boolean isCredentialsNonExpired;
 	private boolean isEnabled;
 
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "users_roles",
+			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	private Collection<Role> roles;
+	// Is populated from roles during loading.
 	@Transient
 	private Collection<SimpleGrantedAuthority> authorities;
 
@@ -112,7 +109,7 @@ public class User implements UserDetails {
 	}
 
 	public void setCreatedAt() {
-		createdAt = LocalDate.now(); //.toString();
+		createdAt = LocalDate.now(); // .toString();
 	}
 
 	// var authorities = roles.stream()

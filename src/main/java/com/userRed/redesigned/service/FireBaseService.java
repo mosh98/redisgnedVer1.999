@@ -19,16 +19,16 @@ import lombok.extern.java.Log;
 @Log
 @Service
 public class FireBaseService {
-	
+
 	public boolean existsByEmail(@Valid @NotBlank @Email String email) {
 		try {
 			FirebaseAuth.getInstance()
 					.getUserByEmail(email);
 		} catch (FirebaseAuthException e) {
-			log.info("User don't exists by email: " + email);
+			log.info(String.format("User with email %s not found in Firebase", email));
 			return false;
 		}
-		log.info("User exists by email: " + email);
+		log.info(String.format("No user with email %s found in Firebase", email));
 		return true;
 	}
 }

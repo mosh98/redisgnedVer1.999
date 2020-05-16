@@ -207,13 +207,6 @@ public class UserService implements UserDetailsService {
 		}
 		return authorities;
 	}
-
-	 @RequestMapping(value = "/username", method = RequestMethod.GET)
-	    @ResponseBody
-	    public String currentUserNameSimple(HttpServletRequest request) {
-	        Principal principal = request.getUserPrincipal();
-	        return principal.getName();
-	    }
 	 
 	public List<User> getAllUsers() {
 		var name = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
