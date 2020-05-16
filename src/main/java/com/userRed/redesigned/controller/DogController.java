@@ -1,11 +1,19 @@
 package com.userRed.redesigned.controller;
 
 
-import com.userRed.redesigned.service.DogService;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import javax.transaction.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.userRed.redesigned.enums.Gender;
+import com.userRed.redesigned.service.DogService;
 
 
 @RestController
@@ -50,7 +58,7 @@ public class DogController {
     /**CALL: localhost:8080/dogs/update/id?=XXXX&gender=XXXX */
 
     @PutMapping(path = "/update", params = {"id", "gender"})
-    public ResponseEntity<?> updateDogGenderById(@RequestParam("id") Long id, @RequestParam("gender") String gender){
+    public ResponseEntity<?> updateDogGenderById(@RequestParam("id") Long id, @RequestParam("gender") Gender gender){
         return ResponseEntity.ok(service.updateGenderOnDog(id, gender));
     }
 

@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import com.userRed.redesigned.model.Dog;
-import com.userRed.redesigned.model.Role;
 import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.request.UserRequest;
 import com.userRed.redesigned.service.DogService;
@@ -36,6 +37,14 @@ public class UserController {
 
     // POST MAPPINGS
 
+ //   @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("#username == authentication.principal.username")
+ //   @Secured("ROLE_ADMIN")
+	@GetMapping(path = "/{username}")
+	public Optional<User> getUser(@PathVariable String username){
+		return userService.findByUsername(username);
+	}
+	
     @PostMapping(path = "/login", params = { "username", "password"})
     public ResponseEntity<?>  login(@RequestParam String username, @RequestParam String password) throws Exception {
 
@@ -196,6 +205,11 @@ public class UserController {
 //		return ResponseEntity.ok(userIds);
 	}
 
+	@PostMapping(path = "/signup")
+	public void signup(@RequestBody UserRequest request){
+		userService.signUp(request);
+	}
+	
 	@PostMapping(path = "/add")
 	public ResponseEntity<?> registerNewUser1(@RequestBody UserRequest request) throws FirebaseAuthException {
 		log.info("registering new username= " + request.getUsername() + " password= " + request.getPassword()

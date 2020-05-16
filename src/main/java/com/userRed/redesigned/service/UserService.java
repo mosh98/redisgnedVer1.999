@@ -1,6 +1,7 @@
 package com.userRed.redesigned.service;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +36,7 @@ import com.userRed.redesigned.model.Role;
 import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.repository.RoleRepository;
 import com.userRed.redesigned.repository.UserRepository;
+import com.userRed.redesigned.request.UserRequest;
 
 import lombok.extern.java.Log;
 
@@ -152,7 +154,7 @@ public class UserService implements UserDetailsService {
 		Optional<User> user = userRepository.findByUsername(username);
 		if (user.isPresent()) {
 			user.get()
-					.setDate_of_birth(dateOfBirth);
+					.setDateOfBirth(LocalDate.parse(dateOfBirth));
 			userRepository.save(user.get());
 		}
 		return ResponseEntity.ok(userRepository.save(user.get()));
@@ -290,5 +292,11 @@ public class UserService implements UserDetailsService {
 		System.out.println("Successfully created new user: " + userRecord.getUid());
 
 		return userRecord.getUid();
+	}
+	
+	
+	public void signUp(UserRequest request) {
+//		var user = modelMapper.map(request, User.class);
+		
 	}
 }

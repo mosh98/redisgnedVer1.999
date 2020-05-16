@@ -2,14 +2,17 @@ package com.userRed.redesigned.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
+import com.userRed.redesigned.enums.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,21 +30,14 @@ public class Dog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dog_id")
-    private Long dogId;
-
-    @Column(name = "name")
+    private Long id;
+    @NotBlank
     private String name;
-
-    @Column(name = "breed")
+    @NotBlank
     private String breed;
-
-    @Column(name = "age")
     private int age;
-
-    @Column(name = "gender")
-    private String gender;
-
-    @Column(name = "description")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     private String description;
 
 //    @ManyToOne(fetch = FetchType.EAGER)

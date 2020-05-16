@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.userRed.redesigned.enums.Gender;
 import com.userRed.redesigned.model.Dog;
 import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.repository.DogRepository;
@@ -45,7 +46,7 @@ public class DogService {
 	public ResponseEntity<?> updateNameOnDog(	Long id,
 												String name) {
 
-		Optional<Dog> dog = repository.findByDogId(id);
+		Optional<Dog> dog = repository.findById(id);
 		dog.get()
 				.setName(name);
 
@@ -57,7 +58,7 @@ public class DogService {
 		if (age >= 25)
 			return new ResponseEntity<>("Age should be lesser than 25", HttpStatus.NOT_ACCEPTABLE);
 
-		Optional<Dog> dog = repository.findByDogId(id);
+		Optional<Dog> dog = repository.findById(id);
 		dog.get()
 				.setAge(age);
 
@@ -67,7 +68,7 @@ public class DogService {
 	public ResponseEntity<?> updateBreedOnDog(	Long id,
 												String breed) {
 
-		Optional<Dog> dog = repository.findByDogId(id);
+		Optional<Dog> dog = repository.findById(id);
 		dog.get()
 				.setBreed(breed);
 
@@ -75,9 +76,9 @@ public class DogService {
 	}
 
 	public ResponseEntity<?> updateGenderOnDog(	Long id,
-												String gender) {
+												Gender gender) {
 
-		Optional<Dog> dog = repository.findByDogId(id);
+		Optional<Dog> dog = repository.findById(id);
 		dog.get()
 				.setGender(gender);
 
@@ -87,7 +88,7 @@ public class DogService {
 	public ResponseEntity<?> updateDescriptionOnDog(Long id,
 													String description) {
 
-		Optional<Dog> dog = repository.findByDogId(id);
+		Optional<Dog> dog = repository.findById(id);
 		dog.get()
 				.setDescription(description);
 
@@ -95,11 +96,11 @@ public class DogService {
 	}
 
 	public Long deleteDogById(Long id) {
-		return repository.deleteByDogId(id);
+		return repository.deleteById(id);
 	}
 
 	public Optional<Dog> findDogById(Long id) {
-		return repository.findByDogId(id);
+		return repository.findById(id);
 
 	}
 }

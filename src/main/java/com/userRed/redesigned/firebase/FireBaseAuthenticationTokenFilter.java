@@ -37,7 +37,6 @@ public class FireBaseAuthenticationTokenFilter extends OncePerRequestFilter {
 		log.info("Firebase filtering...");
 
 		final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-
 		if (!Strings.isNullOrEmpty(authorization) && authorization.startsWith("Bearer ")) {
 			final String idToken = authorization.replace("Bearer ", "");
 			log.info("...found token...");

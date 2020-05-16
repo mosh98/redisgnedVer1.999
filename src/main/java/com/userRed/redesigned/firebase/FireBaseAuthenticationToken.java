@@ -17,7 +17,7 @@ public class FireBaseAuthenticationToken extends AbstractAuthenticationToken {
 	private final Object credentials;										// password
 	private final Object principal;										// userdetails
 	private final Collection<? extends GrantedAuthority> authorities;		// authorities/roles
-	private final boolean isAuthenticated = false;						// authenticated
+	private final boolean isAuthenticated;						// authenticated
 
 	public FireBaseAuthenticationToken(String username,
 			String password,
@@ -29,7 +29,7 @@ public class FireBaseAuthenticationToken extends AbstractAuthenticationToken {
 		credentials = password;
 		principal = userDetails;
 		authorities = grantedAuthorities;
-		isAuthenticated = true;
+		this.isAuthenticated = isAuthenticated;
 	}
 
 	public FireBaseAuthenticationToken(String username, String password) {
@@ -81,8 +81,7 @@ public class FireBaseAuthenticationToken extends AbstractAuthenticationToken {
 
 	@Override
 	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-		throw new SecurityException("Illegal manipulation of isAuthenticated, token not to be trusted");
-		// this.isAuthenticated = isAuthenticated;
+		throw new SecurityException("Illegal manipulation of isAuthenticated field, token not to be trusted");
 	}
 
 }

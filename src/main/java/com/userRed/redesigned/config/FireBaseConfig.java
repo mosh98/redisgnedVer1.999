@@ -19,6 +19,11 @@ import lombok.extern.java.Log;
 @Configuration
 public class FireBaseConfig {
 
+	//Bucket bucket = StorageClient.getInstance().bucket("my-custom-bucket");
+
+	private final static String FIRE_BASE = "https://pvtdogpark.firebaseio.com";
+	private final static String CLOUD_STORAGE = "pvtdogpark.appspot.com";
+
 	private InputStream inputStream;
 	private FirebaseOptions fireBaseOptions;
 	
@@ -54,7 +59,8 @@ public class FireBaseConfig {
 
 	private void createFireBaseOptions() throws IOException {
 		fireBaseOptions = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(inputStream))
-				.setDatabaseUrl("https://pvtdogpark.firebaseio.com")
+				.setDatabaseUrl(FIRE_BASE)
+				.setStorageBucket(CLOUD_STORAGE)
 				.build();
 		log.info("Created Firebase options.");
 	}
@@ -66,4 +72,5 @@ public class FireBaseConfig {
 		}
 	}
 
+	
 }

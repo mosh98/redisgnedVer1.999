@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface DogRepository extends JpaRepository<Dog,Integer> {
 
-     Optional<Dog> findByDogId(Long id);
+     Optional<Dog> findById(Long id);
 
      List<Dog> findAllByOwner_Id(Long id);
 
-     Long deleteByDogId(Long id);
+     Long deleteById(Long id);
 
 
 }

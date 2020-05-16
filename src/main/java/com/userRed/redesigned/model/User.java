@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,47 +48,21 @@ public class User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-//    @JsonIgnore
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private long id;
-//    @Column(name = "username")
-//    private String username;
-//    @Column(name = "email")
-//    @Email
-//    private String email;
-//    @JsonIgnore
-//    @Column(name = "password")
-//    private String password;
-//    @Column(name = "date_of_birth")
-//    private String date_of_birth;
-//    @Column(name = "gender_type")
-//    private String gender_type;
-//    @Column(name = "description")
-//    private String description;
-//    @Column(name = "acc_created")
-//    private String createdAt;
-
-//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//	@JoinTable(name = "user_dogs",
-//			joinColumns = @JoinColumn(name = "user_id"),
-//			inverseJoinColumns = @JoinColumn(name = "dog_id"))
-
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "users_dogs",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "dog_id"))
 	private Set<Dog> dogs;
 
-//	@PastOrPresent
-	private String date_of_birth;
+	@PastOrPresent
+	private LocalDate dateOfBirth;
 
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 	private String description;
-//	@PastOrPresent
-	@Column(name = "acc_created")
-	private String createdAt;
+	@PastOrPresent
+//	@Column(name = "acc_created")
+	private LocalDate createdAt;
 
 	@Id
 	@JsonIgnore
@@ -121,7 +95,6 @@ public class User implements UserDetails {
 	@Transient
 	private Collection<SimpleGrantedAuthority> authorities;
 
-	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
@@ -139,7 +112,7 @@ public class User implements UserDetails {
 	}
 
 	public void setCreatedAt() {
-		createdAt = LocalDate.now().toString();
+		createdAt = LocalDate.now(); //.toString();
 	}
 
 	// var authorities = roles.stream()
