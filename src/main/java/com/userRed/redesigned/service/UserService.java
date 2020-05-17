@@ -57,6 +57,16 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	ObjectMapper mapper;
 
+	public Optional<User> getUser(@Valid @NotBlank String username) {
+		return userRepository.findByUsername(username);
+	}
+	
+	public User getAuthenticatedUser(String username) {
+		return getUser(username)
+				.orElseThrow(() -> new UsernameNotFoundException(
+						String.format("User %s is authenticated but could not be found in user database.", username)));
+	}
+
 	public Dog saveDog(	@Valid User user,
 						@Valid Dog dog) {
 		dog.setOwner(user);
@@ -98,9 +108,6 @@ public class UserService implements UserDetailsService {
 //		return ResponseEntity.of(ussr);
 //	}
 
-	public Optional<User> findByUsername(String username) {
-		return userRepository.findByUsername(username);
-	}
 
 	public User save(User user) throws Exception,
 			HttpException {

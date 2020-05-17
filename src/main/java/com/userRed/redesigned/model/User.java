@@ -72,12 +72,10 @@ public class User implements UserDetails {
 	private String displayName; // FB
 	private String photoUrl; // FB
 
-	@OneToMany(fetch = FetchType.EAGER) //, cascade = CascadeType.ALL)
-	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-        org.hibernate.annotations.CascadeType.DELETE,
-        org.hibernate.annotations.CascadeType.MERGE,
-        org.hibernate.annotations.CascadeType.PERSIST,
-        org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@OneToMany(fetch = FetchType.EAGER) // , cascade = CascadeType.ALL)
+	@Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE,
+			org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.PERSIST,
+			org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	@JoinTable(name = "users_dogs",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "dog_id"))
@@ -123,25 +121,23 @@ public class User implements UserDetails {
 	public boolean hasDog(@Valid @NonNull Dog dog) {
 		return hasDog(dog.getName());
 	}
-	
+
 	public boolean hasDog(@Valid @NotBlank String name) {
 		return getDog(name) != null;
 	}
 
-	public Dog getDog(@NotBlank String name) {
-		for (Dog dog : dogs) {
-			if (dog.getName()
-					.equals(name)) {
-				return dog;
-			}
-		}
-		return null;
+	public Dog getDog(@Valid @NotBlank String name) {
+		return dogs.stream()
+				.filter(dog -> dog.getName()
+						.equals(name))
+				.findFirst()
+				.orElse(null);
 	}
-	
+
 	public boolean removeDog(@NotBlank String name) {
 		return dogs.remove(getDog(name));
 	}
-	
+
 	// var authorities = roles.stream()
 //				.map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole()))
 //				.collect(Collectors.toSet());

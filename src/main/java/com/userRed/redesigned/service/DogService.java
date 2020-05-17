@@ -2,6 +2,10 @@ package com.userRed.redesigned.service;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +19,7 @@ public class DogService {
 	@Autowired
 	private DogRepository dogRepository;
 
-//	@Autowired
-//	UserService myUserDetailsService;
-
-	public Dog save(Dog dog) {
+	public Dog save(@Valid @NotNull Dog dog) {
 		return dogRepository.save(dog);
 	}
 
@@ -26,18 +27,9 @@ public class DogService {
 		return dogRepository.deleteById(id);
 	}
 	
-	public Optional<Dog> findByName(String name){
+	public Optional<Dog> getByName(@Valid @NotBlank String name) {
 		return dogRepository.findByName(name);
 	}
-	
-//	public ResponseEntity<?> saveDog(	Dog dog,
-//										String ownerName) {
-//
-//		Optional<User> owner = myUserDetailsService.findByUsername(ownerName);// gets by username
-//		dog.setOwner(owner.get());
-//
-//		return ResponseEntity.ok(repository.save(dog));
-//	}
 
 //	public List<Dog> getDogs(String ownerUsername) {
 //

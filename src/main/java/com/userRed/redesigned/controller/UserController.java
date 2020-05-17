@@ -37,13 +37,15 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-//	@Autowired
-//	private DogService dogService;
+	@GetMapping
+	public ResponseEntity<?> getAllUsers() throws FirebaseAuthException {
+		return ResponseEntity.ok(userService.getAllUsers());
+	}
 
 	@PreAuthorize("#username == authentication.principal.username")
 	@GetMapping(path = "/{username}")
 	public Optional<User> getUser(@Valid @NotBlank @PathVariable String username) {
-		return userService.findByUsername(username);
+		return userService.getUser(username);
 	}
 
 	@PreAuthorize("#username == authentication.principal.username")
@@ -52,9 +54,9 @@ public class UserController {
 												@Valid @RequestBody Dog dog)
 			throws HttpException,
 			Exception {
-		var user = getAuthenticatedUser(username);
+		var user = userService.getAuthenticatedUser(username);
 		dog = userService.saveDog(user, dog);
-		return ResponseEntity.ok(dog); // userService.findByUsername(username));
+		return ResponseEntity.ok(dog);
 	}
 
 	@Transactional
@@ -64,15 +66,9 @@ public class UserController {
 										@NotNull @RequestBody Dog dog)
 			throws HttpException,
 			Exception {
-		var user = getAuthenticatedUser(username);
+		var user = userService.getAuthenticatedUser(username);
 		user = userService.removeDog(user, dog);
-		return ResponseEntity.ok(user);
-	}
-
-	private User getAuthenticatedUser(String username) {
-		return userService.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException(
-						String.format("User %s is authenticated but could not be found in user database.", username)));
+		return ResponseEntity.of(Optional.ofNullable(user));
 	}
 
 //	@PostMapping(path = "dog/register", params = { "owner" })
@@ -178,10 +174,6 @@ public class UserController {
 //		return ResponseEntity.of(result);
 //	}
 
-	@GetMapping
-	public ResponseEntity<?> getAllUsers() throws FirebaseAuthException {
-		return ResponseEntity.ok(userService.getAllUsers());
-
 //		if(principal != null) {
 //			System.out.println("Current user= " + principal.getName());
 //		}
@@ -199,7 +191,6 @@ public class UserController {
 //		}
 //
 //		return ResponseEntity.ok(userIds);
-	}
 
 	@PostMapping(path = "/signup")
 	public void signup(@RequestBody UserRequest request) {
