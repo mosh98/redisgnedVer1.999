@@ -1,30 +1,23 @@
 package com.userRed.redesigned.service;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,12 +25,14 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.userRed.redesigned.model.Authority;
+import com.userRed.redesigned.model.Dog;
 import com.userRed.redesigned.model.Role;
 import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.repository.RoleRepository;
 import com.userRed.redesigned.repository.UserRepository;
 import com.userRed.redesigned.request.UserRequest;
 
+import lombok.val;
 import lombok.extern.java.Log;
 
 @Log
@@ -51,6 +46,9 @@ public class UserService implements UserDetailsService {
 	private RoleRepository roleRepository;
 
 	@Autowired
+	private DogService dogService;
+
+	@Autowired
 	private FireBaseService fireBaseService;
 
 	@Autowired
@@ -59,119 +57,151 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	ObjectMapper mapper;
 
-	public ResponseEntity<?> verify(String usrname,
-									String password) {
-
-		Optional<User> ussr = findByUsername(usrname);
-		String encryptedPass = passwordEncoder.encode(password);
-
-		if (ussr.get()
-				.getPassword()
-				.equals(encryptedPass)) {
-			return ResponseEntity.ok("User Granted");
+	public Dog saveDog(	@Valid User user,
+						@Valid Dog dog) {
+		dog.setOwner(user);
+		if (user.hasDog(dog)) {
+			log.info("Updating existing dog");
+			val userDog = user.getDog(dog.getName());
+			val id = userDog.getId();
+			dog.setId(id);
+		} else {
+			log.info("Creating new dog");
 		}
-
-		return ResponseEntity.of(ussr);
+		return dogService.save(dog);
 	}
+
+	public User removeDog(	@Valid User user,
+							Dog dog)
+			throws HttpException,
+			Exception {
+		if (user.removeDog(dog.getName())) {
+			log.info("Dog deleted and removed from user");
+			return save(user);
+		}
+		log.warning("Dog not owned by user therefor not removable.");
+		return null;
+	}
+
+//	public ResponseEntity<?> verify(String usrname,
+//									String password) {
+//
+//		Optional<User> ussr = findByUsername(usrname);
+//		String encryptedPass = passwordEncoder.encode(password);
+//
+//		if (ussr.get()
+//				.getPassword()
+//				.equals(encryptedPass)) {
+//			return ResponseEntity.ok("User Granted");
+//		}
+//
+//		return ResponseEntity.of(ussr);
+//	}
 
 	public Optional<User> findByUsername(String username) {
 		return userRepository.findByUsername(username);
 	}
 
-	public ResponseEntity<?> save(User usrParam) throws Exception,
+	public User save(User user) throws Exception,
 			HttpException {
-
-		boolean existsByUserName = userRepository.existsByUsername(usrParam.getUsername());
-		System.out.println(existsByUserName);
-
-		if (existsByUserName)
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
-
-		int size = usrParam.getUsername()
-				.toCharArray().length;
-		if (size >= 30)
-			return new ResponseEntity<>("username cannot be bigger than or equal to 30", HttpStatus.NOT_ACCEPTABLE);
-
-		String encryptedPass = passwordEncoder.encode(usrParam.getPassword());
-
-		usrParam.setCreatedAt();
-		usrParam.setPassword(encryptedPass);
-		usrParam.setDescription("Write something about yourself!");
-		return ResponseEntity.ok(userRepository.save(usrParam));
+		if (!userRepository.existsByUsername(user.getUsername())) {
+			user.setCreatedAt(LocalDate.now());
+		}
+		return userRepository.save(user);
 	}
 
-	private String extractUsername(String smth) {
-		String[] parts = smth.split("@");
-		return parts[0];
-	}
+//
+//		boolean existsByUserName = userRepository.existsByUsername(usrParam.getUsername());
+//		System.out.println(existsByUserName);
+//
+//		if (existsByUserName)
+//			return new ResponseEntity<>(HttpStatus.CONFLICT);
+//
+//		int size = usrParam.getUsername()
+//				.toCharArray().length;
+//		if (size >= 30)
+//			return new ResponseEntity<>("username cannot be bigger than or equal to 30", HttpStatus.NOT_ACCEPTABLE);
+//
+//		String encryptedPass = passwordEncoder.encode(usrParam.getPassword());
+//
+//		usrParam.setCreatedAt();
+//		usrParam.setPassword(encryptedPass);
+//		usrParam.setDescription("Write something about yourself!");
+//		return ResponseEntity.ok(userRepository.save(usrParam));
+//	}
 
-	public ResponseEntity<?> saveUsingEmail(User paramUsr) {
-		// should throw exception when paramUsr has null as mail
-
-		boolean emailEmpty = paramUsr.getEmail()
-				.trim()
-				.isEmpty();
-		if (emailEmpty)
-			return new ResponseEntity<>("ERROR: Email Cannot be empty", HttpStatus.UNAUTHORIZED);
-
-		if (!paramUsr.getEmail()
-				.contains("@"))
-			return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
-
-		paramUsr.setCreatedAt();
-		paramUsr.setDescription("Write something about yourself!");
-		paramUsr.setUsername(extractUsername(paramUsr.getEmail()));
-
-		return ResponseEntity.ok(userRepository.save(paramUsr));
-	}
+//	private String extractUsername(String smth) {
+//		String[] parts = smth.split("@");
+//		return parts[0];
+//	}
+//
+//	public ResponseEntity<?> saveUsingEmail(User paramUsr) {
+//		// should throw exception when paramUsr has null as mail
+//
+//		boolean emailEmpty = paramUsr.getEmail()
+//				.trim()
+//				.isEmpty();
+//		if (emailEmpty)
+//			return new ResponseEntity<>("ERROR: Email Cannot be empty", HttpStatus.UNAUTHORIZED);
+//
+//		if (!paramUsr.getEmail()
+//				.contains("@"))
+//			return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
+//
+//		paramUsr.setCreatedAt();
+//		paramUsr.setDescription("Write something about yourself!");
+//		paramUsr.setUsername(extractUsername(paramUsr.getEmail()));
+//
+//		return ResponseEntity.ok(userRepository.save(paramUsr));
+//	}
 
 	public Optional<User> findUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
 
-	public ResponseEntity<?> updateUserDescription(	String username,
-													String description) {
-
-		Optional<User> user = userRepository.findByUsername(username);
-		user.get()
-				.setDescription(description);
-
-		return ResponseEntity.ok(userRepository.save(user.get()));
-	}
-
-	public ResponseEntity<?> updatePassword(String username,
-											String password) {
-
-		Optional<User> user = userRepository.findByUsername(username);
-		user.get()
-				.setPassword(password);
-
-		return ResponseEntity.ok(userRepository.save(user.get()));
-	}
-
-	public ResponseEntity<?> updateDateOfBirth(	String username,
-												String dateOfBirth) {
-		Optional<User> user = userRepository.findByUsername(username);
-		if (user.isPresent()) {
-			user.get()
-					.setDateOfBirth(LocalDate.parse(dateOfBirth));
-			userRepository.save(user.get());
-		}
-		return ResponseEntity.ok(userRepository.save(user.get()));
-	}
-
-	public ResponseEntity<?> updateEmail(	String username,
-											String email) {
-
-		Optional<User> user = userRepository.findByUsername(username);
-
-		if (!email.contains("@"))
-			return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
-
-		user.get()
-				.setEmail(email);
-		return ResponseEntity.ok(userRepository.save(user.get()));
-	}
+//	public ResponseEntity<?> updateUserDescription(	String username,
+//													String description) {
+//
+//		Optional<User> user = userRepository.findByUsername(username);
+//		user.get()
+//				.setDescription(description);
+//
+//		return ResponseEntity.ok(userRepository.save(user.get()));
+//	}
+//
+//	public ResponseEntity<?> updatePassword(String username,
+//											String password) {
+//
+//		Optional<User> user = userRepository.findByUsername(username);
+//		user.get()
+//				.setPassword(password);
+//
+//		return ResponseEntity.ok(userRepository.save(user.get()));
+//	}
+//
+//	public ResponseEntity<?> updateDateOfBirth(	String username,
+//												String dateOfBirth) {
+//		Optional<User> user = userRepository.findByUsername(username);
+//		if (user.isPresent()) {
+//			user.get()
+//					.setDateOfBirth(LocalDate.parse(dateOfBirth));
+//			userRepository.save(user.get());
+//		}
+//		return ResponseEntity.ok(userRepository.save(user.get()));
+//	}
+//
+//	public ResponseEntity<?> updateEmail(	String username,
+//											String email) {
+//
+//		Optional<User> user = userRepository.findByUsername(username);
+//
+//		if (!email.contains("@"))
+//			return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
+//
+//		user.get()
+//				.setEmail(email);
+//		return ResponseEntity.ok(userRepository.save(user.get()));
+//	}
 
 //    public Page<User> getByQuery(String name, Pageable pageable) {
 //       //return usersRepository.findAllByUsername(name, pageable).map(Users::new);
@@ -207,12 +237,14 @@ public class UserService implements UserDetailsService {
 		}
 		return authorities;
 	}
-	 
+
 	public List<User> getAllUsers() {
-		var name = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
-			System.out.println(name.getEmail());
-			
+		var name = (User) SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getPrincipal();
+
+		System.out.println(name.getEmail());
+
 //		return userRepository.findAll();
 		var users = userRepository.findAll();
 		for (User user : users) {
@@ -286,10 +318,9 @@ public class UserService implements UserDetailsService {
 
 		return userRecord.getUid();
 	}
-	
-	
+
 	public void signUp(UserRequest request) {
 //		var user = modelMapper.map(request, User.class);
-		
+
 	}
 }

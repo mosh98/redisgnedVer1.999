@@ -12,7 +12,7 @@ public interface DogRepository extends JpaRepository<Dog, Integer> {
 
 	Optional<Dog> findById(Long id);
 
-	List<Dog> findAllByOwner_Id(Long id);
+//	List<Dog> findAllByOwner_Id(Long id);
 
 	Long deleteById(Long id);
 
