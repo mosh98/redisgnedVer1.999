@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "pvtdogpark",
+  "private_key_id": "c17a426d3462256126f887a6591a9bb853e37852",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCIn/IbOzFZinbd\npjv/Imt/+tY9o3UqF/n9jykuQMBkzkYnCKv4RVjWK+KzmmdYTp9OQi0MpCdUNvtO\nlGLyBMtSk8Pw5XUNYKRmRPg0U3bmppvlA/2dRtFDFqwG+nqJt7whOInmCEopikVL\ne3tWbGGsKALo2pKXg3n/D/o1SouZYfwtdUgPwA7ccnKb/rxp6Q/pjLhHpjiPuFiw\nrM1JfST0eHSvb0BQpO4qEe7z/kwBFqiSw1Zr1Bllj1PsiwCDPpDUtJmb7ZftDxLI\n9qwFGmqTvB7iGdLsYcXDuiRMfg6UCc6La2Ksh4hPtNNJ4+VBJcjFVK3qN2KofQ+e\nTY1zemkLAgMBAAECggEAQrf4/xtU6ikYCv2W5uzkGkdgQBGGsdurlQtITPIKAjBJ\nSd6OPFuBGnWr65FHTnR2jzz5yuaO3i1LZABKoW197QGD+ivTkYjUP60GmGb59YD/\nOENOonNm1aBIuc+v73juQjrd/Junu8luNYJDpNyghfW0FgpG8/6coNYolcWljmz4\nkqLsoAJMrSm6iDPi6HBb0Qq57oxaofoQ7fUwwTjfi4p4FUihAxj65JMVhXnk3MGm\nAM2AqWU7zrGaxNIxmD/Xx9atAwzQ50hQLjaBI4rhQfjr/x/DtTDdB35KzDFfwSuc\n2e5iWfBejoTsPvHT3R3486HPPe2o9DdzN4/JRJFNQQKBgQC8xk96YFNa59jOdGfm\n5yYEOwi6oaeamc+hVUPmO36r50IALxvdNv5m28cBxXWMkfg7wrce7ialC3KIlN3x\nzW79M5vGMb1kAWP8QbsV9fsCrGXpcn75RgAkKThbVoMB08rk1Uk63cr6oUGFjrPE\n2nGzrRfeefDaNWaHw7L6qrjiUwKBgQC5R2ExpjfncPs7QZ1WGaD/9cAWZzM9sq4L\nWKxUE+Z4P5ceNcT0XT37T5a1T/FS8khJJkfo2oPJPOu7lL+o6VAauAzqoU2C8y15\n2wpyDBU5iN376CK/HhsYJVfR5l2AffyycSf5/JjXiX/KvZplErMCjmBuTQI7ARVB\nX+g4lat3aQKBgQCzkxZx/IXuuRRWOQfJ8GMKrTm9iB/PArgv6dOAhWIXlxMC581i\n33icUj96YONUiFsSRkU6qCOc50nZwXtsFReax+hMXm6iXmxFwCV/W5KfVW5Q53kA\nGeXygD+7K43ORDIDAx35YJlBV/rjWP+LqJ125ZcKLQfAHAJf7fspVxQvPwKBgQCs\n5LMKBbX9PyzxqtULV3cp40WQolTqqiZHaEPHYZqbc5utETftYGVKcoaMQ0FKydQy\njopj/CUmULcZoEEJek7J4B4NhOAz5oD1STWCH0xfGB0tyP1DovBdo9tDf9iY4vg/\n+9/2I4Ts/N5Hbo746m4pYHsT8sC2Ftii3MByrRgIoQKBgAr4DtMb8GKrLJGwEHau\nulAq3Od15uaBK+YUYAbvrKrFoNdaJluK58qUKhWEkhgdzch7mVnzoNxH6JsOZfIX\nVxyFKK2ZItK1BdN+/1NtmzZw5ncsw6raQjj8yOc2rGefGutB/H/7/+67eQ+tEsyj\ne/Hi/98g1xz3r4dgBzMLybvW\n-----END PRIVATE KEY-----\n",
+  "client_email": "server@pvtdogpark.iam.gserviceaccount.com",
+  "client_id": "112757342812152507228",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/server%40pvtdogpark.iam.gserviceaccount.com"
+}

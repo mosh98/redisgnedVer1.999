@@ -1,5 +1,8 @@
 package com.userRed.redesigned.controller;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +25,7 @@ import lombok.extern.java.Log;
 public class DogController {
 
 	@Autowired
-	private DogService service;
+	private DogService dogService;
 
 	@Autowired
 	private DogRepository dogRepository;
@@ -33,14 +36,15 @@ public class DogController {
 	@PreAuthorize("#username == authentication.principal.username")
 	@GetMapping(path = "/{username}/{dogname}")
 	public ResponseEntity<?> getDog(FireBaseAuthenticationToken authentication,
-									@PathVariable String username,
-									@PathVariable String dogname) {
+									@Valid @NotBlank @PathVariable String username,
+									@Valid @NotBlank @PathVariable String dogname) {
 //		var user = userRepository.findByUsername(username);
 //		if(user.isPresent() &&
 //			user.get().hasDog(dogname)) {
 //		}
 	
-		var dog = dogRepository.findByName(dogname);
+		
+		var dog = dogService.getByName(dogname);
 		if (dog.isPresent()) {
 			if (getOwnerUsername(dog.get()).equals(username)) {
 				log.info(username + " is owner of " + dogname);

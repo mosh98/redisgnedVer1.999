@@ -35,7 +35,6 @@ public class FireBaseAuthenticationTokenFilter extends OncePerRequestFilter {
 			throws ServletException,
 			IOException {
 		log.info("Firebase filtering...");
-
 		final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 		if (!Strings.isNullOrEmpty(authorization) && authorization.startsWith("Bearer ")) {
 			final String idToken = authorization.replace("Bearer ", "");
@@ -46,7 +45,6 @@ public class FireBaseAuthenticationTokenFilter extends OncePerRequestFilter {
 					.setAuthentication(fireBaseAuthenticationToken);
 			log.info("...done!");
 			filterChain.doFilter(request, response);
-
 		} else {
 			log.warning("...failed!");
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed, invalid token.");

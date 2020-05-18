@@ -9,9 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
 
 import lombok.extern.java.Log;
 
@@ -19,22 +20,29 @@ import lombok.extern.java.Log;
 @Configuration
 public class FireBaseConfig {
 
-	//Bucket bucket = StorageClient.getInstance().bucket("my-custom-bucket");
-
 	private final static String FIRE_BASE = "https://pvtdogpark.firebaseio.com";
 	private final static String CLOUD_STORAGE = "pvtdogpark.appspot.com";
+	private final static String PROJECT_ID = "pvtdogpark";
 
-	private InputStream inputStream;
+//	private InputStream inputStream;
+	private GoogleCredentials googleCredentials;
 	private FirebaseOptions fireBaseOptions;
-	
+	private Storage cloudStorage;
+
+	@Bean
+	public Storage cloudStorage() {
+		return cloudStorage;
+	}
+
 	@PostConstruct
 	public void fireBaseInitialization() throws Exception {
 		if (isFireBaseRunning()) {
 			removeRunningFireBase();
 		}
-		getFireBaseServiceAccountKey();
+		getGoogleCredentials();
 		createFireBaseOptions();
 		initializeFireBase();
+		initializeCloudStorage();
 	}
 
 	private boolean isFireBaseRunning() {
@@ -51,26 +59,38 @@ public class FireBaseConfig {
 		log.info("Removed all currently running Firebase applications.");
 	}
 
-	private void initializeFireBase() throws IOException {
-		FirebaseApp.initializeApp(fireBaseOptions);
-		log.info("Firebase application " + FirebaseApp.getInstance()
-		.getName() + " initialized.");
+	private void getGoogleCredentials() throws IOException {
+		googleCredentials = GoogleCredentials.fromStream(getFireBaseServiceAccountKey());
+	}
+	
+	private InputStream getFireBaseServiceAccountKey() throws IOException {
+		InputStream inputStream = getClass().getResourceAsStream("/serviceAccountKey.json");
+		if (inputStream == null) {
+			throw new IOException("Firebase service account resource not found.");
+		}
+		return inputStream;
 	}
 
 	private void createFireBaseOptions() throws IOException {
-		fireBaseOptions = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(inputStream))
+		fireBaseOptions = new FirebaseOptions.Builder().setCredentials(googleCredentials)
 				.setDatabaseUrl(FIRE_BASE)
 				.setStorageBucket(CLOUD_STORAGE)
 				.build();
 		log.info("Created Firebase options.");
 	}
 
-	private void getFireBaseServiceAccountKey() throws IOException {
-		inputStream = getClass().getResourceAsStream("/serviceAccountKey.json");
-		if (inputStream == null) {
-			throw new IOException("Firebase service account resource not found.");
-		}
+	private void initializeFireBase() throws IOException {
+		FirebaseApp.initializeApp(fireBaseOptions);
+		log.info("Initialized Firebase application " + FirebaseApp.getInstance()
+				.getName());
 	}
 
-	
+	private void initializeCloudStorage() {
+		cloudStorage = StorageOptions.newBuilder()
+				.setCredentials(googleCredentials)
+				.setProjectId(PROJECT_ID)
+				.build()
+				.getService();
+		log.info("Initialized Cloud Storage for project " + PROJECT_ID);
+	}
 }
