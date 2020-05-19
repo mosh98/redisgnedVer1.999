@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.Valid;
@@ -37,6 +37,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @SuppressWarnings("serial")
@@ -46,6 +47,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class User implements UserDetails {
 
 	@Id
@@ -59,23 +61,25 @@ public class User implements UserDetails {
 	@Email
 	private String email; // FB
 	@PastOrPresent
+	@NonNull
 	private LocalDate dateOfBirth;
 	@PastOrPresent
 	private LocalDate createdAt;
+	@NonNull
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 	private String description;
 	private String phoneNumber; // FB
-	@NotBlank
+//	@NotBlank
 	@JsonIgnore
 	private String password;
 	private String displayName; // FB
 	private String photoUrl; // FB
+	private String bucket;
 
 	@OneToMany(fetch = FetchType.EAGER) // , cascade = CascadeType.ALL)
 	@Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE,
-			org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.PERSIST,
-			org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+			org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.PERSIST, })
 	@JoinTable(name = "users_dogs",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "dog_id", referencedColumnName = "dog_id"))
@@ -89,7 +93,7 @@ public class User implements UserDetails {
 	private boolean isEnabled;
 
 //	@OneToMany(orphanRemoval = true,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER) // , cascade = CascadeType.ALL)
 	@JoinTable(name = "users_roles",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -108,11 +112,6 @@ public class User implements UserDetails {
 		this.roles.addAll(Arrays.asList(roles));
 		return this;
 	}
-
-//	public User setRoles(Collection<Role> roles) {
-//		this.roles = new HashSet<Role>(roles);
-//		return this;
-//	}
 
 	public void setCreatedAt() {
 		createdAt = LocalDate.now(); // .toString();

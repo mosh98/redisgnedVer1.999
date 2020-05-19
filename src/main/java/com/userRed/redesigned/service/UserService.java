@@ -20,17 +20,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
+import com.userRed.redesigned.cloudstorage.CloudStorageService;
 import com.userRed.redesigned.model.Authority;
 import com.userRed.redesigned.model.Dog;
 import com.userRed.redesigned.model.Role;
 import com.userRed.redesigned.model.User;
 import com.userRed.redesigned.repository.RoleRepository;
 import com.userRed.redesigned.repository.UserRepository;
-import com.userRed.redesigned.request.UserRequest;
 
 import lombok.val;
 import lombok.extern.java.Log;
@@ -55,16 +56,18 @@ public class UserService implements UserDetailsService {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
+	private CloudStorageService cloudStorageService;
+
+	@Autowired
 	ObjectMapper mapper;
 
 	public Optional<User> getUser(@Valid @NotBlank String username) {
 		return userRepository.findByUsername(username);
 	}
-	
+
 	public User getAuthenticatedUser(String username) {
-		return getUser(username)
-				.orElseThrow(() -> new UsernameNotFoundException(
-						String.format("User %s is authenticated but could not be found in user database.", username)));
+		return getUser(username).orElseThrow(() -> new UsernameNotFoundException(
+				String.format("User %s is authenticated but could not be found in user database.", username)));
 	}
 
 	public Dog saveDog(	@Valid User user,
@@ -108,7 +111,6 @@ public class UserService implements UserDetailsService {
 //		return ResponseEntity.of(ussr);
 //	}
 
-
 	public User save(User user) throws Exception,
 			HttpException {
 		if (!userRepository.existsByUsername(user.getUsername())) {
@@ -117,103 +119,9 @@ public class UserService implements UserDetailsService {
 		return userRepository.save(user);
 	}
 
-//
-//		boolean existsByUserName = userRepository.existsByUsername(usrParam.getUsername());
-//		System.out.println(existsByUserName);
-//
-//		if (existsByUserName)
-//			return new ResponseEntity<>(HttpStatus.CONFLICT);
-//
-//		int size = usrParam.getUsername()
-//				.toCharArray().length;
-//		if (size >= 30)
-//			return new ResponseEntity<>("username cannot be bigger than or equal to 30", HttpStatus.NOT_ACCEPTABLE);
-//
-//		String encryptedPass = passwordEncoder.encode(usrParam.getPassword());
-//
-//		usrParam.setCreatedAt();
-//		usrParam.setPassword(encryptedPass);
-//		usrParam.setDescription("Write something about yourself!");
-//		return ResponseEntity.ok(userRepository.save(usrParam));
-//	}
-
-//	private String extractUsername(String smth) {
-//		String[] parts = smth.split("@");
-//		return parts[0];
-//	}
-//
-//	public ResponseEntity<?> saveUsingEmail(User paramUsr) {
-//		// should throw exception when paramUsr has null as mail
-//
-//		boolean emailEmpty = paramUsr.getEmail()
-//				.trim()
-//				.isEmpty();
-//		if (emailEmpty)
-//			return new ResponseEntity<>("ERROR: Email Cannot be empty", HttpStatus.UNAUTHORIZED);
-//
-//		if (!paramUsr.getEmail()
-//				.contains("@"))
-//			return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
-//
-//		paramUsr.setCreatedAt();
-//		paramUsr.setDescription("Write something about yourself!");
-//		paramUsr.setUsername(extractUsername(paramUsr.getEmail()));
-//
-//		return ResponseEntity.ok(userRepository.save(paramUsr));
-//	}
-
 	public Optional<User> findUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-
-//	public ResponseEntity<?> updateUserDescription(	String username,
-//													String description) {
-//
-//		Optional<User> user = userRepository.findByUsername(username);
-//		user.get()
-//				.setDescription(description);
-//
-//		return ResponseEntity.ok(userRepository.save(user.get()));
-//	}
-//
-//	public ResponseEntity<?> updatePassword(String username,
-//											String password) {
-//
-//		Optional<User> user = userRepository.findByUsername(username);
-//		user.get()
-//				.setPassword(password);
-//
-//		return ResponseEntity.ok(userRepository.save(user.get()));
-//	}
-//
-//	public ResponseEntity<?> updateDateOfBirth(	String username,
-//												String dateOfBirth) {
-//		Optional<User> user = userRepository.findByUsername(username);
-//		if (user.isPresent()) {
-//			user.get()
-//					.setDateOfBirth(LocalDate.parse(dateOfBirth));
-//			userRepository.save(user.get());
-//		}
-//		return ResponseEntity.ok(userRepository.save(user.get()));
-//	}
-//
-//	public ResponseEntity<?> updateEmail(	String username,
-//											String email) {
-//
-//		Optional<User> user = userRepository.findByUsername(username);
-//
-//		if (!email.contains("@"))
-//			return new ResponseEntity<>("ERROR: Email has to be a valid email ", HttpStatus.UNAUTHORIZED);
-//
-//		user.get()
-//				.setEmail(email);
-//		return ResponseEntity.ok(userRepository.save(user.get()));
-//	}
-
-//    public Page<User> getByQuery(String name, Pageable pageable) {
-//       //return usersRepository.findAllByUsername(name, pageable).map(Users::new);
-//       return userRepository.getByQuery(name, pageable).map(User::new);
-//    }
 
 	@Override
 	public User loadUserByUsername(@Valid @NotBlank String username) throws UsernameNotFoundException {
@@ -273,50 +181,48 @@ public class UserService implements UserDetailsService {
 //	}
 
 	public User registerNewUser(User user) throws FirebaseAuthException {
-
-		if (userRepository.existsByUsername(user.getUsername()) || userRepository.existsByEmail(user.getEmail())) {
-			// throw new IllegalStateException("User already exists.");
+		if (existsByUsernameOrEmail(user)) {
 			log.warning("User with email " + user.getEmail() + " already exists");
-//			return null;
-			throw new SecurityException(String.format("User with email %s already exists", user.getEmail()));
+			throw new SecurityException(String
+					.format("User with username %s and email %s already exists", user.getUsername(), user.getEmail()));
 		}
 
-		if (fireBaseService.existsByEmail(user.getEmail())) {
-			// throw new IllegalStateException
-			log.warning("User with email " + user.getEmail() + " already exists");
-//			return null;
-			throw new SecurityException(String.format("User with email %s already exists", user.getEmail()));
-		}
+		CreateRequest request = new CreateRequest().setEmail(user.getEmail())
+				.setEmailVerified(false)
+				.setDisplayName(user.getUsername())
+				.setDisabled(false);
 
-		String userId = registerNewFireBaseUser(user);
+		UserRecord userRecord = FirebaseAuth.getInstance()
+				.createUser(request);
+		System.out.println("Successfully created new user: " + userRecord.getUid());
+		String userId = userRecord.getUid();
+
+		Bucket bucket = cloudStorageService.createRandomBucket();
+		
 		user.setUserId(userId)
-//				.setRole(new Role("ADMIN"))  //Authority.ADMIN_READ)
-				// .setGrantedAuthorities(Role.ADMIN.getGrantedAuthorities())
-				.setPassword(passwordEncoder.encode(user.getPassword()))
 				.setAccountNonExpired(true)
 				.setAccountNonLocked(true)
 				.setCredentialsNonExpired(true)
 				.setEnabled(true)
-				// Role role = roleRepository.findByName(name);
-
-				.setRoles(roleRepository.findByName("ROLE_USER"));
-
+				.setRoles(roleRepository.findByName("ROLE_USER"))
+				.setBucket(bucket.toString());
 		userRepository.save(user);
+		System.out.println(user.toString());
+		
 		return user;
+	}
+
+	private boolean existsByUsernameOrEmail(User user) {
+		return userRepository.existsByUsername(user.getUsername()) || userRepository.existsByEmail(user.getEmail())
+				|| fireBaseService.existsByEmail(user.getEmail());
+
 	}
 
 	private String registerNewFireBaseUser(User user) throws FirebaseAuthException {
 
 		CreateRequest request = new CreateRequest().setEmail(user.getEmail())
 				.setEmailVerified(false)
-				.setPassword(user.getPassword())
-//				.setPhoneNumber(user.getPhoneNumber() == null
-//						? ""
-//						: user.getPhoneNumber())
 				.setDisplayName(user.getUsername())
-//				.setPhotoUrl(user.getPhotoUrl() == null
-//						? ""
-//						: user.getPhotoUrl())
 				.setDisabled(false);
 
 		UserRecord userRecord = FirebaseAuth.getInstance()
@@ -324,10 +230,5 @@ public class UserService implements UserDetailsService {
 		System.out.println("Successfully created new user: " + userRecord.getUid());
 
 		return userRecord.getUid();
-	}
-
-	public void signUp(UserRequest request) {
-//		var user = modelMapper.map(request, User.class);
-
 	}
 }

@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,7 +26,7 @@ import lombok.extern.java.Log;
 public class SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	UserService userDetailsService;
+	private UserService userDetailsService;
 
 	// add AuthenticationProvider to list in AutenticationManager
 	@Override
@@ -45,36 +46,21 @@ public class SecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 		log.info("Configuring HTTP security...");
 		http.csrf()
 				.disable() // Disable csrf if server not for web services.
-//				.sessionManagement()
-//				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//				.and()
-//				.addFilterBefore(new CustomAuthenticationFilter(userDetailsService, authenticationManager()),
-//						BasicAuthenticationFilter.class)
-//				.addFilterAfter(new CustomAuthenticationTokenFilter(userDetailsService, authenticationManager()),
-//						CustomAuthenticationFilter.class)
-				.addFilterBefore(new FireBaseAuthenticationTokenFilter(authenticationManager()),
-						BasicAuthenticationFilter.class)
-
-				// addFilterAfter(new CustomAuthenticationTokenFilter(),
-				// CustomAuthenticationFilter.class)
 				.authorizeRequests()
-				.antMatchers("/**") // .hasRole("ADMIN")
-				.permitAll() // .hasRole("USER")
-//				.hasAuthority("ADdMIN") //.denyAll()
-				// .hasAuthority("ADFGDFG")
-//				.permitAll()
+				.antMatchers("/**")
+				.permitAll()
 				.anyRequest()
 				.authenticated()
-//				.and()
-//				// make sure we use stateless session; session won't be used to
-//				// store user's state.
+				.and()
+				.addFilterBefore(new FireBaseAuthenticationTokenFilter(authenticationManager()),
+						BasicAuthenticationFilter.class)
 //				.exceptionHandling()
 //				.authenticationEntryPoint(serverAuthenticationEntryPoint) // HTTP 401
-				.and()
+//				.and()
+				// make sure we use stateless session; session won't be used to
+				// store user's state.
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//				.and()
-//				.httpBasic();
 		log.info("...done!");
 	}
 

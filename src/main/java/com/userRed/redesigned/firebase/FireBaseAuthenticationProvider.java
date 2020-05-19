@@ -33,7 +33,7 @@ public class FireBaseAuthenticationProvider implements AuthenticationProvider {
 
 		try {
 			// debug only, normally uid is fetched from firebase as below.
-			String uid = "1fISL0B55WRZ6PNTCanL8IcZVom2"; //b4OwvLmxWYNLxR3p3dzt9df10DL2";
+			String uid = "1fISL0B55WRZ6PNTCanL8IcZVom2"; // b4OwvLmxWYNLxR3p3dzt9df10DL2";
 //			String uid = verifyIdToken(fireBaseAuthenticationToken.getIdToken());
 
 			UserRecord userRecord = FirebaseAuth.getInstance()
@@ -49,8 +49,8 @@ public class FireBaseAuthenticationProvider implements AuthenticationProvider {
 
 		} catch (FirebaseAuthException e) {
 			log.warning("...firebase failed to authenticate!");
-			log.warning("Error code= " + e.getErrorCode() + ", Message= " + e.getMessage()); // throw new
-																							 // SecurityException(e.getMessage());
+			log.warning("Error code= " + e.getErrorCode() + ", Message= " + e.getMessage());
+//			throw new SecurityException(e.getMessage());
 		} catch (UsernameNotFoundException e) {
 			log.warning("...failed to find user");
 			log.warning(e.getMessage());

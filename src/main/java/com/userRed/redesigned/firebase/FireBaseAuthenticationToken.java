@@ -2,22 +2,21 @@ package com.userRed.redesigned.firebase;
 
 import java.util.Collection;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+//@Getter
+//@Setter
 @SuppressWarnings("serial")
 public class FireBaseAuthenticationToken extends AbstractAuthenticationToken {
 
 	private final Object details;											// username
 	private final Object credentials;										// password
-	private final Object principal;										// userdetails
+	private final Object principal;											// userdetails
 	private final Collection<? extends GrantedAuthority> authorities;		// authorities/roles
-	private final boolean isAuthenticated;						// authenticated
+	private final boolean isAuthenticated;									// authenticated
 
 	public FireBaseAuthenticationToken(String username,
 			String password,
@@ -32,11 +31,11 @@ public class FireBaseAuthenticationToken extends AbstractAuthenticationToken {
 		this.isAuthenticated = isAuthenticated;
 	}
 
-	public FireBaseAuthenticationToken(String username, String password) {
+	public FireBaseAuthenticationToken(@NotBlank String username, @NotBlank String password) {
 		this(username, password, null, null, false);
 	}
 
-	public FireBaseAuthenticationToken(String idToken) {
+	public FireBaseAuthenticationToken(@NotBlank String idToken) {
 		this(idToken, null, null, null, false);
 	}
 

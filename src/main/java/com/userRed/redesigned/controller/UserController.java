@@ -10,7 +10,6 @@ import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +36,16 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@PostMapping("/register")
+	public String register(@RequestBody User user) throws FirebaseAuthException {
+		log.info("REGISTER");
+		user = userService.registerNewUser(user);
+		if(user != null && user.isEnabled()) {
+			return "User registered!";
+		}
+		return "Failed to register user";
+	}
+	
 	@GetMapping
 	public ResponseEntity<?> getAllUsers() throws FirebaseAuthException {
 		return ResponseEntity.ok(userService.getAllUsers());
@@ -191,11 +200,6 @@ public class UserController {
 //		}
 //
 //		return ResponseEntity.ok(userIds);
-
-	@PostMapping(path = "/signup")
-	public void signup(@RequestBody UserRequest request) {
-		userService.signUp(request);
-	}
 
 	@PostMapping(path = "/add")
 	public ResponseEntity<?> registerNewUser1(@RequestBody UserRequest request) throws FirebaseAuthException {
