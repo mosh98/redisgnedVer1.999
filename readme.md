@@ -1,3 +1,5 @@
+[![Build Status](https://dashboard.heroku.com/pipelines/ac1adf58-4c58-4984-9607-7836e6bf702c/tests/)](https://dashboard.heroku.com/pipelines/ac1adf58-4c58-4984-9607-7836e6bf702c/tests/46)
+
 # User and Dogs
 ### link: https://redesigned-backend.herokuapp.com/
 
