@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/firebase/firebase-admin-java/workflows/Continuous%20Integration/badge.svg)](https://dashboard.heroku.com/pipelines/ac1adf58-4c58-4984-9607-7836e6bf702c/tests/46)
+
 # User and Dogs
 ### link: https://redesigned-backend.herokuapp.com/
 
