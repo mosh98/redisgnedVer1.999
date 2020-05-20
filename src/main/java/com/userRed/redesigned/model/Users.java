@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class Users {
     
     @JsonIgnore

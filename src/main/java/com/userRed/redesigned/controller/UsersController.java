@@ -57,7 +57,7 @@ public class UsersController {
     /**CALL: localhost:8080/user/register */
 
     @PostMapping(path = "/register")
-    public ResponseEntity<?> registerUser(@RequestBody Users users) throws Exception {
+    public ResponseEntity<?> registerUser(@RequestBody Users users ) throws Exception {
         return userService.save(users);
     }
 
@@ -120,7 +120,7 @@ public class UsersController {
     /**CALL: localhost:8080/user/getMyDogs?username=XXXX */
 
     @GetMapping(path = "/getMyDogs", params = {"username"}) //username for owner that is
-    public ResponseEntity<?> getMyDogs(@RequestParam String username){
+    public ResponseEntity<?> getMyDogs(@RequestParam String username, @RequestParam String token){
         return ResponseEntity.ok(dogService.getDogs(username));
     }
 
