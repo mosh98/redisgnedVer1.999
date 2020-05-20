@@ -61,7 +61,7 @@ public class CloudStorageController {
 		var principal = authentication.getPrincipal();
 		if (principal instanceof User) {
 			User user = (User) principal;
-			var signedUrl = cloudStorageService.getSignedUploadUrl(user, filename);
+			var signedUrl = cloudStorageService.getSignedImageUploadUrl(user, filename);
 			return ResponseEntity.ok(signedUrl);
 		}
 		throw new IllegalStateException(

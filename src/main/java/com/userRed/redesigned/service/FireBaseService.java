@@ -4,15 +4,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.google.firebase.auth.UserRecord.CreateRequest;
-import com.userRed.redesigned.model.User;
 
 import lombok.extern.java.Log;
 
@@ -30,5 +26,15 @@ public class FireBaseService {
 		}
 		log.info(String.format("No user with email %s found in Firebase", email));
 		return true;
+	}
+
+	public String getUserIdByEmail(@NotBlank String email) {
+		try {
+			UserRecord userRecord = FirebaseAuth.getInstance()
+					.getUserByEmail(email);
+			return userRecord.getUid();
+		} catch (FirebaseAuthException e) {
+			throw new SecurityException("User with email " + email + " not found in Firebase");
+		}
 	}
 }

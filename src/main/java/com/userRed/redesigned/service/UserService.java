@@ -16,15 +16,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.storage.Bucket;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
-import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.userRed.redesigned.cloudstorage.CloudStorageService;
 import com.userRed.redesigned.model.Authority;
 import com.userRed.redesigned.model.Dog;
@@ -52,8 +48,8 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	private FireBaseService fireBaseService;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+//	@Autowired
+//	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private CloudStorageService cloudStorageService;
@@ -181,22 +177,26 @@ public class UserService implements UserDetailsService {
 //	}
 
 	public User registerNewUser(User user) throws FirebaseAuthException {
-		if (existsByUsernameOrEmail(user)) {
+		if (existsByUsernameOrEmail(user)){
 			log.warning("User with email " + user.getEmail() + " already exists");
 			throw new SecurityException(String
 					.format("User with username %s and email %s already exists", user.getUsername(), user.getEmail()));
 		}
+		if(!fireBaseService.existsByEmail(user.getEmail())){
+			throw new SecurityException("User not registered in Firebase.");
+		}
 
-		CreateRequest request = new CreateRequest().setEmail(user.getEmail())
-				.setEmailVerified(false)
-				.setDisplayName(user.getUsername())
-				.setDisabled(false);
-
-		UserRecord userRecord = FirebaseAuth.getInstance()
-				.createUser(request);
-		System.out.println("Successfully created new user: " + userRecord.getUid());
-		String userId = userRecord.getUid();
-
+		
+//		CreateRequest request = new CreateRequest().setEmail(user.getEmail())
+//				.setEmailVerified(false)
+//				.setDisplayName(user.getUsername())
+//				.setDisabled(false);
+//		UserRecord userRecord = FirebaseAuth.getInstance()
+//				.createUser(request);
+//		System.out.println("Successfully created new user: " + userRecord.getUid());
+//		String userId = userRecord.getUid();
+		String userId= fireBaseService.getUserIdByEmail(user.getEmail());
+		
 		Bucket bucket = cloudStorageService.createRandomBucket();
 		
 		user.setUserId(userId)
@@ -213,22 +213,23 @@ public class UserService implements UserDetailsService {
 	}
 
 	private boolean existsByUsernameOrEmail(User user) {
-		return userRepository.existsByUsername(user.getUsername()) || userRepository.existsByEmail(user.getEmail())
-				|| fireBaseService.existsByEmail(user.getEmail());
+		return userRepository.existsByUsername(user.getUsername()) || userRepository.existsByEmail(user.getEmail());
+		
+		//		|| fireBaseService.existsByEmail(user.getEmail());
 
 	}
 
-	private String registerNewFireBaseUser(User user) throws FirebaseAuthException {
-
-		CreateRequest request = new CreateRequest().setEmail(user.getEmail())
-				.setEmailVerified(false)
-				.setDisplayName(user.getUsername())
-				.setDisabled(false);
-
-		UserRecord userRecord = FirebaseAuth.getInstance()
-				.createUser(request);
-		System.out.println("Successfully created new user: " + userRecord.getUid());
-
-		return userRecord.getUid();
-	}
+//	private String registerNewFireBaseUser(User user) throws FirebaseAuthException {
+//
+//		CreateRequest request = new CreateRequest().setEmail(user.getEmail())
+//				.setEmailVerified(false)
+//				.setDisplayName(user.getUsername())
+//				.setDisabled(false);
+//
+//		UserRecord userRecord = FirebaseAuth.getInstance()
+//				.createUser(request);
+//		System.out.println("Successfully created new user: " + userRecord.getUid());
+//
+//		return userRecord.getUid();
+//	}
 }

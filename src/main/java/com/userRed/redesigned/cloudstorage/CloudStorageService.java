@@ -76,12 +76,24 @@ public class CloudStorageService {
 		return signedUrl.toString();
 	}
 
+	public String getSignedImageUploadUrl(	User user,
+											String blobName) {
+		return getSignedUploadUrl(user, blobName, "text/csv");
+	}
+
 	public String getSignedUploadUrl(	@Valid @NonNull User user,
-										@NotBlank String blobName) {
+										@NotBlank String blobName,
+										@NotBlank String contentType) {
 		String bucketName = user.getBucket();
-//		var blobInfo = BlobInfo.newBuilder(bucketName, blobName).setContentType("text/csv");	// only with SignUrlOption.withContentType()
-		URL signedUrl = cloudStorage.signUrl(BlobInfo.newBuilder(bucketName, blobName)
-				.build(), SIGNED_URL_TTL, SIGNED_URL_TTL_UNIT, SignUrlOption.httpMethod(HttpMethod.PUT));
+		var blobInfo = BlobInfo.newBuilder(bucketName, blobName)
+				.setContentType(contentType)
+				.build(); // only with SignUrlOption.withContentType()
+		URL signedUrl = cloudStorage.signUrl(blobInfo,  // BlobInfo.newBuilder(bucketName, blobName)
+//				.build(),
+				SIGNED_URL_TTL,
+				SIGNED_URL_TTL_UNIT,
+				SignUrlOption.httpMethod(HttpMethod.PUT),
+				SignUrlOption.withContentType());
 		return signedUrl.toString();
 	}
 
