@@ -68,7 +68,7 @@ public class MyUserDetailsService implements UserDetailsService {
         int size = usrParam.getUsername().toCharArray().length;
         if(size >= 30) return new ResponseEntity<>("username cannot be bigger than or equal to 30",HttpStatus.NOT_ACCEPTABLE);
 
-        String encryptedPass = bcryptEncoder.encode( usrParam.getPassword() );
+        String encryptedPass = bcryptEncoder.encode("its a string" + usrParam.getPassword() );
 
         usrParam.setCreatedAt();
         usrParam.setPassword(encryptedPass);
