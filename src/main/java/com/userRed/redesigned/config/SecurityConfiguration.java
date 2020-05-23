@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .disable()
                 // dont authenticate this particular request
                 .authorizeRequests()
-                .antMatchers("/authenticate","/dogs/**","/find","/update","/delete","/registerWithMail","dog/register" ,"/addNewDog","/register","/getMyDogs","/dogpark/**", "/dog/**", "/user/**", "/wastebin/**", "/login/**")
+                .antMatchers("/authenticate","/dogs/**","/find","/update","/delete","/registerWithMail","dog/register" ,"/addNewDog","/register","/getMyDogs","/dogpark/**", "/dog/**", "/user/**", "/wastebin/**", "/login/**", "/dogPicture/**")
                 .permitAll().anyRequest().authenticated();
     }
 
