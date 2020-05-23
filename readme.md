@@ -58,6 +58,11 @@ https://redesigned-backend.herokuapp.com/dogs/find?id=xxx
 GET list of dogs a user owns
 https://redesigned-backend.herokuapp.com/user/getMyDogs?username= XXX
 
+GET dogs profilepicture
+
+https://redesigned-backend.herokuapp.com/dogPicture/getPicture?id=XXXXX
+Vid reqeust skickas ett URL tillbaka där bilden är lagrad
+
 DELETE dog from database
 https://redesigned-backend.herokuapp.com/dogs/delete?dogId=xxx
 
@@ -87,6 +92,11 @@ https://redesigned-backend.herokuapp.com/dogs/update?id=XXXX&gender=XXXX */
 
 PUT change the dogs description
 https://redesigned-backend.herokuapp.com/dogs/update?id=XXXX&description=XXXX */
+
+PUT change the dogs profile picture
+
+https://redesigned-backend.herokuapp.com/dogPicture/addPicture?id=XXXXX
+Need to send a form-data with the name file (key) together with the files name (value)
 
 ## .../wastebin
 

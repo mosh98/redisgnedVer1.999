@@ -33,6 +33,9 @@ public class Dog {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "profile_picture")
+    private String profile_picture;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users owner;
