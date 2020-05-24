@@ -12,11 +12,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,10 +43,11 @@ public class DogProfilePictureService
         this.awsS3AudioBucket = awsS3AudioBucket;
     }
 
-    public String getProfilePictureFromDogById(Long id) {
+    public URL getProfilePictureFromDogById(Long id) throws MalformedURLException {
 
         Optional<Dog> dog = dogRepository.findByDogId(id);
-        return dog.get().getProfile_picture();
+        String toUrl = dog.get().getProfile_picture();
+        return new URL(toUrl);
     }
 
     public void uploadDogProfilePictureById(Long id, MultipartFile multipartFile, boolean enablePublicReadAccess)

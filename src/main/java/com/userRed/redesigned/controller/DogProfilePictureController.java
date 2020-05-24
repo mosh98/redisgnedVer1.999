@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -23,14 +26,15 @@ public class DogProfilePictureController {
     @PutMapping(path = "addPicture", params = "id")
     public String uploadFile(@RequestPart(value = "file") MultipartFile file, @RequestParam("id") Long id)
     {
-        this.dogProfilePictureService.uploadDogProfilePictureById(id, file, true);
+        dogProfilePictureService.uploadDogProfilePictureById(id, file, true);
         return "File [" + file.getOriginalFilename() + "] uploaded to storage";
     }
 
     /**CALL: localhost:8080/dogPicture/getPicture?id=XXXXX */
 
     @GetMapping(path = "getPicture", params = "id")
-    public String getPictureFromId(@RequestParam(value = "id") Long id) {
+    @ResponseBody
+    public URL getPictureFromId(@RequestParam(value = "id") Long id) throws MalformedURLException {
         return dogProfilePictureService.getProfilePictureFromDogById(id);
     }
 
