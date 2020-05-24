@@ -13,6 +13,4 @@ public interface DogRepository extends JpaRepository<Dog,Integer> {
      List<Dog> findAllByOwner_Id(Long id);
 
      Long deleteByDogId(Long id);
-
-
 }
