@@ -30,6 +30,7 @@ public class DogProfilePictureController {
     /**CALL: localhost:8080/dogPicture/getPicture?id=XXXXX */
 
     @GetMapping(path = "getPicture", params = "id")
+    @ResponseBody
     public String getPictureFromId(@RequestParam(value = "id") Long id) {
         return dogProfilePictureService.getProfilePictureFromDogById(id);
     }
